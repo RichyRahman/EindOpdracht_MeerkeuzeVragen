@@ -1,0 +1,123 @@
+﻿<Window x:Class="MeerkeuzeVragenApp.UI.Views.VraagBeheerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MeerkeuzeVragenApp.UI.Views"
+        mc:Ignorable="d"
+        Title="Vragen Beheren" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titel -->
+        <TextBlock Grid.Row="0" Text="Vragen Beheren" FontSize="20"
+                   FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <!-- Filter op onderwerp -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="Onderwerp:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox x:Name="CmbOnderwerp" Width="200" Height="30"
+                      SelectionChanged="CmbOnderwerp_SelectionChanged"/>
+            <CheckBox x:Name="ChkAlleenBeschikbaar" Content="Toon enkel beschikbare"
+                      IsChecked="True" VerticalAlignment="Center" Margin="20,0,0,0"
+                      Checked="Filter_Changed" Unchecked="Filter_Changed"/>
+        </StackPanel>
+
+        <!-- Nieuwe vraag toevoegen -->
+        <GroupBox Grid.Row="2" Header="Nieuwe vraag toevoegen" Margin="0,0,0,15" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBox x:Name="TxtNieuweVraag" Grid.Row="0" Padding="5"
+                         Height="35" Margin="0,0,0,8"
+                         ToolTip="Vraagtekst"/>
+
+                <!-- 4 antwoorden -->
+                <Grid Grid.Row="1" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="TxtAntwoordA" Grid.Column="0" Padding="5"
+                             Margin="0,0,5,0" ToolTip="Antwoord A"/>
+                    <TextBox x:Name="TxtAntwoordB" Grid.Column="1" Padding="5"
+                             Margin="0,0,5,0" ToolTip="Antwoord B"/>
+                    <TextBox x:Name="TxtAntwoordC" Grid.Column="2" Padding="5"
+                             Margin="0,0,5,0" ToolTip="Antwoord C"/>
+                    <TextBox x:Name="TxtAntwoordD" Grid.Column="3" Padding="5"
+                             ToolTip="Antwoord D"/>
+                </Grid>
+
+                <!-- Correct antwoord + moeilijkheid -->
+                <Grid Grid.Row="2" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Correct antwoord:" 
+                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox x:Name="CmbCorrect" Grid.Column="1" Height="30">
+                        <ComboBoxItem Content="A" IsSelected="True"/>
+                        <ComboBoxItem Content="B"/>
+                        <ComboBoxItem Content="C"/>
+                        <ComboBoxItem Content="D"/>
+                    </ComboBox>
+                    <TextBlock Grid.Column="2" Text="Moeilijkheid:" 
+                               VerticalAlignment="Center" Margin="20,0,10,0"/>
+                    <ComboBox x:Name="CmbNieuweMoeilijkheid" Grid.Column="3" Height="30">
+                        <ComboBoxItem Content="Makkelijk" IsSelected="True"/>
+                        <ComboBoxItem Content="Gemiddeld"/>
+                        <ComboBoxItem Content="Moeilijk"/>
+                    </ComboBox>
+                </Grid>
+
+                <Button Grid.Row="3" Content="➕ Vraag Toevoegen" Height="35"
+                        HorizontalAlignment="Left" Width="180"
+                        Background="#4CAF50" Foreground="White"
+                        Click="BtnVoegVraagToe_Click"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Lijst van vragen -->
+        <DataGrid x:Name="DgVragen" Grid.Row="3" AutoGenerateColumns="False"
+                  IsReadOnly="True" SelectionMode="Single"
+                  CanUserAddRows="False" Margin="0,0,0,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50"/>
+                <DataGridTextColumn Header="Vraag" Binding="{Binding Tekst}" Width="*"/>
+                <DataGridTextColumn Header="Moeilijkheid" 
+                                    Binding="{Binding Moeilijkheidsgraad}" Width="100"/>
+                <DataGridCheckBoxColumn Header="Beschikbaar" 
+                                        Binding="{Binding IsBeschikbaar}" Width="90"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Onderste knoppen -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <Button Content="🚫 Stel Niet Beschikbaar" Height="35" Width="200"
+                    Background="#F44336" Foreground="White" Margin="0,0,10,0"
+                    Click="BtnNietBeschikbaar_Click"/>
+            <TextBlock x:Name="TxtFeedback" VerticalAlignment="Center"
+                       FontSize="12" Margin="10,0,0,0"/>
+            <Button Content="Sluiten" Height="35" Width="100"
+                    HorizontalAlignment="Right" Margin="10,0,0,0"
+                    Click="BtnSluiten_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

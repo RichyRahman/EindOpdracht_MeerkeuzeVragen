@@ -1,0 +1,23 @@
+﻿<Window x:Class="MeerkeuzeVragenApp.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MeerkeuzeVragenApp.UI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Meerkeuzevragen Applicatie" FontSize="24" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,0,0,30"/>
+            <Button Content="📝  Test Opstellen" Width="250" Height="45" FontSize="14"
+                    Click="BtnTestOpstellen_Click"/>
+            <Button Content="📥  Data Importeren" Width="250" Height="45" FontSize="14"
+                    Click="BtnImport_Click"/>
+            <Button Content="➕  Vragen Beheren" Width="250" Height="45" FontSize="14"
+                    Click="BtnVragenBeheren_Click"/>
+            <Button Content="▶️  Test Uitvoeren" Width="250" Height="45" FontSize="14"
+                    Click="BtnTestUitvoeren_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
