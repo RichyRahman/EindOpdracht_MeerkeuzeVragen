@@ -23,7 +23,72 @@ Open MySQL Workbench en voer het meegeleverde script `database_script.sql` uit:
 ```sql
 CREATE DATABASE meerkeuzeDB;
 USE meerkeuzeDB;
--- rest van het script...
+
+CREATE TABLE Onderwerp (
+	ID INT AUTO_INCREMENT,
+    Naam VARCHAR(255) NOT NULL,
+    PRIMARY KEY(ID)
+);
+
+CREATE TABLE Vraag (
+	ID INT AUTO_INCREMENT,
+    onderwerpID INT NOT NULL,
+    Moeilijkheidsgraad  VARCHAR(255) NOT NULL,
+    Tekst VARCHAR(255) NOT NULL,
+    isBeschikbaar BOOL DEFAULT TRUE,
+    PRIMARY KEY(ID),
+    FOREIGN KEY(onderwerpID) REFERENCES Onderwerp(ID)
+);
+
+CREATE TABLE Antwoord(
+	vraagID INT NOT NULL,
+    Tekst VARCHAR(255) NOT NULL,
+    isCorrect BOOL DEFAULT FALSE,
+    Feedback VARCHAR(255),
+    PRIMARY KEY(vraagID, Tekst),
+    FOREIGN KEY(vraagID) REFERENCES Vraag(ID)
+);
+
+CREATE TABLE Test(
+	ID INT AUTO_INCREMENT,
+    Naam VARCHAR(255) NOT NULL,
+    onderwerpID INT NOT NULL,
+    PRIMARY KEY(ID),
+    FOREIGN KEY(onderwerpID) REFERENCES Onderwerp(ID)
+);
+
+CREATE TABLE TestVragen(
+	testID INT NOT NULL,
+    vraagID INT NOT NULL,
+    PRIMARY KEY(testID, vraagID),
+    FOREIGN KEY(testID) REFERENCES Test(ID),
+    FOREIGN KEY(vraagID) REFERENCES Vraag(ID)
+);
+
+CREATE TABLE Gebruiker(
+	ID INT AUTO_INCREMENT,
+    Naam VARCHAR(255) NOT NULL,
+    PRIMARY KEY(ID)
+);
+
+CREATE TABLE GemaakteTest(
+	ID INT AUTO_INCREMENT,
+    gebruikerID INT NOT NULL,
+    testID INT NOT NULL,
+    PRIMARY KEY(ID),
+    FOREIGN KEY(gebruikerID) REFERENCES Gebruiker(ID),
+    FOREIGN KEY(testID) REFERENCES Test(ID)
+);
+
+CREATE TABLE GemaakteVraag(
+	gemaakteTestID INT NOT NULL,
+    vraagID INT NOT NULL,
+    Tekst VARCHAR(255),
+    PRIMARY KEY(gemaakteTestID, vraagID),
+    FOREIGN KEY(gemaakteTestID) REFERENCES GemaakteTest(ID),
+    FOREIGN KEY(vraagID) REFERENCES Vraag(ID),
+    FOREIGN KEY(vraagID, Tekst) REFERENCES Antwoord(vraagID, Tekst)
+);
 ```
 
 ### 2. Connectiestring instellen
