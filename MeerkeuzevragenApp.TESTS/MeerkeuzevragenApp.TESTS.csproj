@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
@@ -19,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeerkeuzevragenApp.BUSINESS\MeerkeuzevragenApp.BUSINESS.csproj" />
     <ProjectReference Include="..\MeerkeuzevragenApp.DOMEIN\MeerkeuzevragenApp.DOMEIN.csproj" />
   </ItemGroup>
 

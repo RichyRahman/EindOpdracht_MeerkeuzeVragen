@@ -22,22 +22,25 @@ namespace MeerkeuzeVragenApp.UI
     /// </summary>
     public partial class App : Application
     {
-        public static VraagService VraagService { get; private set; } = null!;
-        public static TestService TestService { get; private set; } = null!;
-        public static ImportService ImportService { get; private set; } = null!;
+        public static VraagManager VraagManager { get; private set; } = null!;
+        public static TestManager TestManager { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            string connectionString = "Server=localhost;Port=3306;Database=meerkeuzeDB;User ID=root;Password=root;";
-            var db = new DatabaseConnection(connectionString);
+            
+            var db = new DatabaseConnection();
             var vraagRepo = new VraagRepository(db);
             var testRepo = new TestRepository(db);
+            var parsers = new List<MeerkeuzevragenApp.DOMEIN.Interfaces.ITestParser>
+            {
+                new MeerkeuzevragenApp.DATA.Parsers.CorrectFormaatParser(),
+                new MeerkeuzevragenApp.DATA.Parsers.StandaardFormaatParser()
+            };
 
-            VraagService = new VraagService(vraagRepo);
-            TestService = new TestService(testRepo, vraagRepo);
-            ImportService = new ImportService(vraagRepo);
+            VraagManager = new VraagManager(vraagRepo);
+            TestManager = new TestManager(testRepo, vraagRepo, parsers);
 
             new MainWindow().Show();
         }

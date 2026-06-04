@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,16 +10,15 @@ namespace MeerkeuzevragenApp.DATA
 {
     public class DatabaseConnection
     {
-            public string ConnectionString { get; set; }
-    
-            public DatabaseConnection(string connectionString)
+        private readonly string _connectionString;
+            public DatabaseConnection()
             {
-                ConnectionString = connectionString;
-        }
+                _connectionString = ConfigurationManager.ConnectionStrings["MeerkeuzeDB"].ConnectionString;
+            }
 
         public MySqlConnection GetConnection()
         {
-            return new MySqlConnection("Server=localhost;Port=3306;Database=meerkeuzeDB;User ID=root;Password=root;");
+            return new MySqlConnection(_connectionString);
         }
     }
 }

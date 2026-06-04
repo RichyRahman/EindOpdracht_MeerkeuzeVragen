@@ -4,12 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeerkeuzeVragenApp.UI", "EindOpdracht_MeerkeuzeVragen\MeerkeuzeVragenApp.UI.csproj", "{540630B8-8F91-4C06-AB28-1AFEAB1AB111}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1A2063F6-32C0-433E-A75A-C30C50778F8D} = {1A2063F6-32C0-433E-A75A-C30C50778F8D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeerkeuzevragenApp.DOMEIN", "MeerkeuzevragenApp.DOMEIN\MeerkeuzevragenApp.DOMEIN.csproj", "{18A1117F-AEFA-4F97-B040-5165C9899EA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeerkeuzevragenApp.DATA", "MeerkeuzevragenApp.Data\MeerkeuzevragenApp.DATA.csproj", "{1A2063F6-32C0-433E-A75A-C30C50778F8D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeerkeuzevragenApp.BUSINESS", "MeerkeuzevragenApp.BUSINESS\MeerkeuzevragenApp.BUSINESS.csproj", "{0F5A505D-6616-4B57-9F74-4F9A334133E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeerkeuzevragenApp.TESTS", "MeerkeuzevragenApp.TESTS\MeerkeuzevragenApp.TESTS.csproj", "{97866606-74FD-4DBA-B11B-644C63294DCD}"
 EndProject
@@ -31,10 +32,6 @@ Global
 		{1A2063F6-32C0-433E-A75A-C30C50778F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A2063F6-32C0-433E-A75A-C30C50778F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A2063F6-32C0-433E-A75A-C30C50778F8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F5A505D-6616-4B57-9F74-4F9A334133E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F5A505D-6616-4B57-9F74-4F9A334133E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F5A505D-6616-4B57-9F74-4F9A334133E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F5A505D-6616-4B57-9F74-4F9A334133E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97866606-74FD-4DBA-B11B-644C63294DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97866606-74FD-4DBA-B11B-644C63294DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97866606-74FD-4DBA-B11B-644C63294DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
