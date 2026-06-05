@@ -1,5 +1,4 @@
-﻿using Dapper;
-using MeerkeuzevragenApp.DOMEIN;
+﻿using MeerkeuzevragenApp.DOMEIN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
