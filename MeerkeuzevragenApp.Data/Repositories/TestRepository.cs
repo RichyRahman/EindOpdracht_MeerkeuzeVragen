@@ -1,4 +1,7 @@
 ﻿using MeerkeuzevragenApp.DOMEIN;
+using MeerkeuzevragenApp.DOMEIN.Interfaces;
+using MeerkeuzevragenApp.DOMEIN.Models;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,89 +21,189 @@ namespace MeerkeuzevragenApp.DATA.Repositories
 
         public int MaakTestAan(Test test)
         {
+            string sql = @"INSERT INTO Test (Naam, onderwerpID) 
+                           VALUES (@Naam, @OnderwerpID)";
+
             using var conn = _db.GetConnection();
-            conn.Execute(
-                "INSERT INTO Test (Naam, onderwerpID) VALUES (@Naam, @OnderwerpID)",
-                new { test.Naam, test.OnderwerpID });
-            return conn.QuerySingle<int>("SELECT LAST_INSERT_ID();");
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@Naam", test.Naam);
+            cmd.Parameters.AddWithValue("@OnderwerpID", test.OnderwerpID);
+            cmd.ExecuteNonQuery();
+
+            return (int)cmd.LastInsertedId;
         }
 
         public void VoegTestVraagToe(int testID, int vraagID)
         {
+            string sql = @"INSERT INTO TestVragen (testID, vraagID) 
+                           VALUES (@TestID, @VraagID)";
+
             using var conn = _db.GetConnection();
-            conn.Execute(
-                "INSERT INTO TestVragen (testID, vraagID) VALUES (@TestID, @VraagID)",
-                new { TestID = testID, VraagID = vraagID });
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@TestID", testID);
+            cmd.Parameters.AddWithValue("@VraagID", vraagID);
+            cmd.ExecuteNonQuery();
         }
 
         public List<Test> GetAlleTests()
         {
+            var lijst = new List<Test>();
+            string sql = "SELECT ID, Naam, onderwerpID FROM Test";
+
             using var conn = _db.GetConnection();
-            return conn.Query<Test>("SELECT * FROM Test").ToList();
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                lijst.Add(new Test
+                {
+                    ID = reader.GetInt32("ID"),
+                    Naam = reader.GetString("Naam"),
+                    OnderwerpID = reader.GetInt32("onderwerpID")
+                });
+            }
+
+            return lijst;
         }
 
-        public Test GetTestMetVragen(int testID)
+        public Test? GetTestMetVragen(int testID)
         {
+            Test? test = null;
+
+            // Haal testgegevens op
+
+            string sqlTest = "SELECT ID, Naam, onderwerpID FROM Test WHERE ID = @ID";
+
             using var conn = _db.GetConnection();
-            var test = conn.QueryFirstOrDefault<Test>(
-                "SELECT * FROM Test WHERE ID = @ID", new { ID = testID });
+            conn.Open();
+            using var cmdTest = conn.CreateCommand();
+            cmdTest.CommandText = sqlTest;
+            cmdTest.Parameters.AddWithValue("@ID", testID);
+            using var readerTest = cmdTest.ExecuteReader();
 
-            if (test == null) return null;
+            if (!readerTest.Read()) return null;
 
-            var vraagIDs = conn.Query<int>(
-                "SELECT vraagID FROM TestVragen WHERE testID = @TestID",
-                new { TestID = testID }).ToList();
-
-            foreach (var vraagID in vraagIDs)
+            test = new Test
             {
-                var vraag = conn.QueryFirstOrDefault<Vraag>(
-                    "SELECT * FROM Vraag WHERE ID = @ID", new { ID = vraagID });
+                ID = readerTest.GetInt32("ID"),
+                Naam = readerTest.GetString("Naam"),
+                OnderwerpID = readerTest.GetInt32("onderwerpID")
+            };
+            readerTest.Close();
+
+            // Haal IDs van de vragen op die bij deze test horen
+
+            var vraagIDs = new List<int>();
+            string sqlVraagIDs = @"SELECT vraagID FROM TestVragen 
+                                   WHERE testID = @TestID";
+
+            using var cmdIDs = conn.CreateCommand();
+            cmdIDs.CommandText = sqlVraagIDs;
+            cmdIDs.Parameters.AddWithValue("@TestID", testID);
+            using var readerIDs = cmdIDs.ExecuteReader();
+
+            while (readerIDs.Read())
+                vraagIDs.Add(readerIDs.GetInt32("vraagID"));
+            readerIDs.Close();
+
+            // Haal elke vraag + antwoorden op
+            foreach (int vraagID in vraagIDs)
+            {
+                var vraag = GetVraagMetAntwoorden(conn, vraagID);
                 if (vraag != null)
-                {
-                    vraag.Antwoorden = conn.Query<Antwoord>(
-                        "SELECT * FROM Antwoord WHERE vraagID = @VraagID",
-                        new { VraagID = vraagID }).ToList();
                     test.Vragen.Add(vraag);
-                }
             }
+
             return test;
         }
 
         public int SlaGemaakteTestOp(GemaakteTest gemaakteTest)
         {
+            string sql = @"INSERT INTO GemaakteTest (gebruikerID, testID) 
+                           VALUES (@GebruikerID, @TestID)";
+
             using var conn = _db.GetConnection();
-            conn.Execute(
-                "INSERT INTO GemaakteTest (gebruikerID, testID) VALUES (@GebruikerID, @TestID)",
-                new { gemaakteTest.GebruikerID, gemaakteTest.TestID });
-            return conn.QuerySingle<int>("SELECT LAST_INSERT_ID();");
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@GebruikerID", gemaakteTest.GebruikerID);
+            cmd.Parameters.AddWithValue("@TestID", gemaakteTest.TestID);
+            cmd.ExecuteNonQuery();
+
+            return (int)cmd.LastInsertedId;
         }
 
         public void SlaGemaakteVraagOp(GemaakteVraag gemaakteVraag)
         {
+            string sql = @"INSERT INTO GemaakteVraag (gemaakteTestID, vraagID, Tekst) 
+                           VALUES (@GemaakteTestID, @VraagID, @Tekst)";
+
             using var conn = _db.GetConnection();
-            conn.Execute(
-                @"INSERT INTO GemaakteVraag (gemaakteTestID, vraagID, Tekst) 
-                  VALUES (@GemaakteTestID, @VraagID, @GekozenAntwoordTekst)",
-                gemaakteVraag);
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@GemaakteTestID", gemaakteVraag.GemaakteTestID);
+            cmd.Parameters.AddWithValue("@VraagID", gemaakteVraag.VraagID);
+            cmd.Parameters.AddWithValue("@Tekst", gemaakteVraag.GekozenAntwoordTekst);
+            cmd.ExecuteNonQuery();
         }
 
-        public GemaakteTest GetGemaakteTestMetDetails(int gemaakteTestID)
+        public Vraag? GetVraagMetAntwoorden(MySqlConnection conn, int vraagID)
         {
-            using var conn = _db.GetConnection();
-            var gemaakteTest = conn.QueryFirstOrDefault<GemaakteTest>(
-                "SELECT * FROM GemaakteTest WHERE ID = @ID", new { ID = gemaakteTestID });
+            Vraag? vraag = null;
 
-            if (gemaakteTest == null) return null;
+            string sqlVraag = @"SELECT ID, onderwerpID, Moeilijkheidsgraad,
+                                       Tekst, isBeschikbaar
+                                FROM Vraag WHERE ID = @ID";
 
-            gemaakteTest.GemaakteVragen = conn.Query<GemaakteVraag>(
-                "SELECT * FROM GemaakteVraag WHERE gemaakteTestID = @ID",
-                new { ID = gemaakteTestID }).ToList();
+            using var cmdVraag = conn.CreateCommand();
+            cmdVraag.CommandText = sqlVraag;
+            cmdVraag.Parameters.AddWithValue("@ID", vraagID);
+            using var readerVraag = cmdVraag.ExecuteReader();
 
-            foreach (var gv in gemaakteTest.GemaakteVragen)
-                gv.Vraag = conn.QueryFirstOrDefault<Vraag>(
-                    "SELECT * FROM Vraag WHERE ID = @ID", new { ID = gv.VraagID })!;
+            if (!readerVraag.Read()) return null;
 
-            return gemaakteTest;
+            vraag = new Vraag
+            {
+                ID = readerVraag.GetInt32("ID"),
+                OnderwerpID = readerVraag.GetInt32("onderwerpID"),
+                Moeilijkheidsgraad = readerVraag.GetString("Moeilijkheidsgraad"),
+                Tekst = readerVraag.GetString("Tekst"),
+                IsBeschikbaar = readerVraag.GetBoolean("isBeschikbaar")
+            };
+            readerVraag.Close();
+
+            // Antwoorden
+            string sqlAntwoorden = @"SELECT vraagID, Tekst, isCorrect, Feedback
+                                     FROM Antwoord WHERE vraagID = @VraagID";
+
+            using var cmdAntwoorden = conn.CreateCommand();
+            cmdAntwoorden.CommandText = sqlAntwoorden;
+            cmdAntwoorden.Parameters.AddWithValue("@VraagID", vraagID);
+            using var readerAntwoorden = cmdAntwoorden.ExecuteReader();
+
+            while (readerAntwoorden.Read())
+            {
+                vraag.Antwoorden.Add(new Antwoord
+                {
+                    VraagID = readerAntwoorden.GetInt32("vraagID"),
+                    Tekst = readerAntwoorden.GetString("Tekst"),
+                    IsCorrect = readerAntwoorden.GetBoolean("isCorrect"),
+                    Feedback = readerAntwoorden.IsDBNull(
+                                    readerAntwoorden.GetOrdinal("Feedback"))
+                                ? null
+                                : readerAntwoorden.GetString("Feedback")
+                });
+            }
+
+            return vraag;
         }
     }
 }

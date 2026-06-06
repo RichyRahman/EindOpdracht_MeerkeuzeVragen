@@ -1,5 +1,7 @@
-﻿using Dapper;
-using MeerkeuzevragenApp.DOMEIN;
+﻿using MeerkeuzevragenApp.DOMEIN;
+using MeerkeuzevragenApp.DOMEIN.Interfaces;
+using MeerkeuzevragenApp.DOMEIN.Models;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,107 +21,188 @@ namespace MeerkeuzevragenApp.DATA.Repositories
 
         public List<Onderwerp> GetAlleOnderwerpen()
         {
+            var lijst = new List<Onderwerp>();
+            string sql = "SELECT ID, Naam FROM Onderwerp";
+
             using var conn = _db.GetConnection();
-            return conn.Query<Onderwerp>("SELECT * FROM Onderwerp").ToList();
+            conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                lijst.Add(new Onderwerp(
+                    reader.GetInt32("ID"),
+                    reader.GetString("Naam")));
+            }
+            return lijst;
         }
 
         public int VoegOnderwerpToe(string naam)
         {
+            string sql = "INSERT INTO Onderwerp (Naam) VALUES (@Naam)";
+
             using var conn = _db.GetConnection();
-            // Use QuerySingle to get the last inserted ID
-            return conn.QuerySingle<int>(
-                "INSERT INTO Onderwerp (Naam) VALUES (@Naam); SELECT LAST_INSERT_ID();",
-                new { Naam = naam });
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@Naam", naam);
+            cmd.ExecuteNonQuery();
+
+            return (int)cmd.LastInsertedId;
         }
 
         public List<Vraag> GetAlleVragen()
         {
+            var lijst = new List<Vraag>();
+            string sql = @"SELECT v.ID, v.onderwerpID, v.Moeilijkheidsgraad, 
+                                  v.Tekst, v.isBeschikbaar,
+                                  o.Naam as OnderwerpNaam
+                           FROM Vraag v
+                           JOIN Onderwerp o ON v.onderwerpID = o.ID";
+
             using var conn = _db.GetConnection();
-            var sql = @"SELECT v.*, o.ID, o.Naam 
-                        FROM Vraag v 
-                        JOIN Onderwerp o ON v.onderwerpID = o.ID";
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            using var reader = cmd.ExecuteReader();
 
-            return conn.Query<Vraag, Onderwerp, Vraag>(sql,
-                (vraag, onderwerp) => { vraag.Onderwerp = onderwerp; return vraag; },
-                splitOn: "ID").ToList();
-        }
+            while (reader.Read())
+            {
+                var vraag = LeesVraag(reader);
+                lijst.Add(vraag);
+            }
 
-        public List<Vraag> GetVragenPerOnderwerp(int onderwerpID)
-        {
-            using var conn = _db.GetConnection();
-            var sql = "SELECT * FROM Vraag WHERE onderwerpID = @OnderwerpID";
-            var vragen = conn.Query<Vraag>(sql, new { OnderwerpID = onderwerpID }).ToList();
-
-            foreach (var vraag in vragen)
+            foreach (var vraag in lijst)
                 vraag.Antwoorden = GetAntwoordenVoorVraag(vraag.ID);
 
-            return vragen;
+            return lijst;
         }
+
 
         public List<Vraag> GetBeschikbareVragenPerOnderwerp(int onderwerpID)
         {
-            using var conn = _db.GetConnection();
-            var sql = "SELECT * FROM Vraag WHERE onderwerpID = @OnderwerpID AND isBeschikbaar = TRUE";
-            var vragen = conn.Query<Vraag>(sql, new { OnderwerpID = onderwerpID }).ToList();
+            var lijst = new List<Vraag>();
+            string sql = @"SELECT ID, onderwerpID, Moeilijkheidsgraad, 
+                                  Tekst, isBeschikbaar
+                           FROM Vraag 
+                           WHERE onderwerpID = @OnderwerpID 
+                           AND isBeschikbaar = TRUE";
 
-            foreach (var vraag in vragen)
+            using var conn = _db.GetConnection();
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@OnderwerpID", onderwerpID);
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                lijst.Add(LeesVraag(reader));
+
+            foreach (var vraag in lijst)
                 vraag.Antwoorden = GetAntwoordenVoorVraag(vraag.ID);
 
-            return vragen;
+            return lijst;
         }
 
         public List<Vraag> GetAlleVragenPerOnderwerp(int onderwerpID)
         {
-            using var conn = _db.GetConnection();
-            var vragen = conn.Query<Vraag>(
-                "SELECT * FROM Vraag WHERE onderwerpID = @OnderwerpID",
-                new { OnderwerpID = onderwerpID }).ToList();
+            var lijst = new List<Vraag>();
+            string sql = @"SELECT ID, onderwerpID, Moeilijkheidsgraad,
+                                  Tekst, isBeschikbaar
+                           FROM Vraag 
+                           WHERE onderwerpID = @OnderwerpID";
 
-            foreach (var vraag in vragen)
+            using var conn = _db.GetConnection();
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@OnderwerpID", onderwerpID);
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                lijst.Add(LeesVraag(reader));
+
+            foreach (var vraag in lijst)
                 vraag.Antwoorden = GetAntwoordenVoorVraag(vraag.ID);
 
-            return vragen;
+            return lijst;
         }
 
         public Vraag GetVraagMetAntwoorden(int vraagID)
         {
+            string sql = @"SELECT ID, onderwerpID, Moeilijkheidsgraad,
+                                  Tekst, isBeschikbaar
+                           FROM Vraag WHERE ID = @ID";
+
             using var conn = _db.GetConnection();
-            var vraag = conn.QueryFirstOrDefault<Vraag>(
-                "SELECT * FROM Vraag WHERE ID = @ID", new { ID = vraagID });
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@ID", vraagID);
+            using var reader = cmd.ExecuteReader();
 
-            if (vraag != null)
-                vraag.Antwoorden = GetAntwoordenVoorVraag(vraagID);
+            if (!reader.Read()) return null;
 
+            var vraag = LeesVraag(reader);
+            reader.Close();
+            vraag.Antwoorden = GetAntwoordenVoorVraag(vraagID);
             return vraag;
         }
 
-        private List<Antwoord> GetAntwoordenVoorVraag(int vraagID)
-        {
-            using var conn = _db.GetConnection();
-            return conn.Query<Antwoord>(
-                "SELECT * FROM Antwoord WHERE vraagID = @VraagID",
-                new { VraagID = vraagID }).ToList();
-        }
 
         public void VoegVraagToe(Vraag vraag)
         {
             using var conn = _db.GetConnection();
             conn.Open();
             using var transaction = conn.BeginTransaction();
+
             try
             {
-                var sqlVraag = @"INSERT INTO Vraag (onderwerpID, Moeilijkheidsgraad, Tekst, isBeschikbaar) 
-                                 VALUES (@OnderwerpID, @Moeilijkheidsgraad, @Tekst, @IsBeschikbaar);
-                                 SELECT LAST_INSERT_ID();";
-                int vraagID = conn.QuerySingle<int>(sqlVraag, vraag, transaction);
+                // Eerst de vraag toevoegen
+
+                string sqlVraag = @"INSERT INTO Vraag 
+                                    (onderwerpID, Moeilijkheidsgraad, Tekst, isBeschikbaar)
+                                    VALUES (@OnderwerpID, @Moeilijkheid, @Tekst, @IsBeschikbaar)";
+
+                using var cmdVraag = conn.CreateCommand();
+                cmdVraag.Transaction = transaction;
+                cmdVraag.CommandText = sqlVraag;
+                cmdVraag.Parameters.AddWithValue("@OnderwerpID", vraag.OnderwerpID);
+                cmdVraag.Parameters.AddWithValue("@Moeilijkheid", vraag.Moeilijkheidsgraad);
+                cmdVraag.Parameters.AddWithValue("@Tekst", vraag.Tekst);
+                cmdVraag.Parameters.AddWithValue("@IsBeschikbaar", vraag.IsBeschikbaar);
+                cmdVraag.ExecuteNonQuery();
+
+                int vraagID = (int)cmdVraag.LastInsertedId;
+
+
+                // Nu de antwoorden toevoegen
+
+                string sqlAntwoord = @"INSERT INTO Antwoord 
+                                       (vraagID, Tekst, isCorrect, Feedback)
+                                       VALUES (@VraagID, @Tekst, @IsCorrect, @Feedback)";
 
                 foreach (var antwoord in vraag.Antwoorden)
                 {
-                    conn.Execute(
-                        "INSERT INTO Antwoord (vraagID, Tekst, isCorrect, Feedback) VALUES (@VraagID, @Tekst, @IsCorrect, @Feedback)",
-                        new { VraagID = vraagID, antwoord.Tekst, antwoord.IsCorrect, antwoord.Feedback },
-                        transaction);
+                    using var cmdAntwoord = conn.CreateCommand();
+                    cmdAntwoord.Transaction = transaction;
+                    cmdAntwoord.CommandText = sqlAntwoord;
+                    cmdAntwoord.Parameters.AddWithValue("@VraagID", vraagID);
+                    cmdAntwoord.Parameters.AddWithValue("@Tekst", antwoord.Tekst);
+                    cmdAntwoord.Parameters.AddWithValue("@IsCorrect", antwoord.IsCorrect);
+
+                    if (antwoord.Feedback == null)
+                        cmdAntwoord.Parameters.AddWithValue("@Feedback", DBNull.Value);
+                    else
+                        cmdAntwoord.Parameters.AddWithValue("@Feedback", antwoord.Feedback);
+
+                    cmdAntwoord.ExecuteNonQuery();
                 }
+
                 transaction.Commit();
             }
             catch
@@ -131,8 +214,56 @@ namespace MeerkeuzevragenApp.DATA.Repositories
 
         public void StelNietBeschikbaar(int vraagID)
         {
+            string sql = "UPDATE Vraag SET isBeschikbaar = FALSE WHERE ID = @ID";
+
             using var conn = _db.GetConnection();
-            conn.Execute("UPDATE Vraag SET isBeschikbaar = FALSE WHERE ID = @ID", new { ID = vraagID });
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@ID", vraagID);
+            cmd.ExecuteNonQuery();
+        }
+
+        private Vraag LeesVraag(MySqlDataReader reader)
+        {
+            return new Vraag
+            {
+                ID = reader.GetInt32("ID"),
+                OnderwerpID = reader.GetInt32("onderwerpID"),
+                Moeilijkheidsgraad = reader.GetString("Moeilijkheidsgraad"),
+                Tekst = reader.GetString("Tekst"),
+                IsBeschikbaar = reader.GetBoolean("isBeschikbaar")
+            };
+        }
+
+        private List<Antwoord> GetAntwoordenVoorVraag(int vraagID)
+        {
+            var lijst = new List<Antwoord>();
+            string sql = @"SELECT ID, vraagID, Tekst, isCorrect, Feedback
+                           FROM Antwoord WHERE vraagID = @VraagID";
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.AddWithValue("@VraagID", vraagID);
+            using var reader = cmd.ExecuteReader();
+
+
+            while (reader.Read())
+            {
+                lijst.Add(new Antwoord
+                {
+                    VraagID = reader.GetInt32("vraagID"),
+                    Tekst = reader.GetString("Tekst"),
+                    IsCorrect = reader.GetBoolean("isCorrect"),
+                    Feedback = reader.IsDBNull(reader.GetOrdinal("Feedback"))
+                                ? null
+                                : reader.GetString("Feedback")
+                });
+
+            }
+            return lijst;
         }
     }
 }
