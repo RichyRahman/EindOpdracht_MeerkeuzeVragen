@@ -1,4 +1,5 @@
 ﻿using MeerkeuzevragenApp.DOMEIN;
+using MeerkeuzevragenApp.DOMEIN.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,6 @@ namespace MeerkeuzeVragenApp.UI.Views
     /// </summary>
     public partial class VraagBeheerView : Window
     {
-        private List<Onderwerp> _onderwerpen;
 
         public VraagBeheerView()
         {
@@ -29,28 +29,27 @@ namespace MeerkeuzeVragenApp.UI.Views
         }
         private void LaadOnderwerpen()
         {
-            _onderwerpen = App.VraagService.GetAlleOnderwerpen();
-            CmbOnderwerp.ItemsSource = _onderwerpen;
+            var onderwerpen = App.VraagManager.GetAlleOnderwerpen();
+            CmbOnderwerp.ItemsSource = onderwerpen;
             CmbOnderwerp.DisplayMemberPath = "Naam";
             CmbOnderwerp.SelectedValuePath = "ID";
-            if (_onderwerpen.Any())
-                CmbOnderwerp.SelectedIndex = 0;
+            if (onderwerpen.Any()) CmbOnderwerp.SelectedIndex = 0;
         }
 
         private void LaadVragen()
         {
             if (CmbOnderwerp.SelectedValue == null) return;
-
             int onderwerpID = (int)CmbOnderwerp.SelectedValue;
+
             var vragen = ChkAlleenBeschikbaar.IsChecked == true
-                ? App.VraagService.GetBeschikbareVragenPerOnderwerp(onderwerpID)
-                : App.VraagService.GetAlleVragenPerOnderwerp(onderwerpID);
+                ? App.VraagManager.GetBeschikbareVragenPerOnderwerp(onderwerpID)
+                : App.VraagManager.GetAlleVragenPerOnderwerp(onderwerpID);
 
             DgVragen.ItemsSource = vragen;
         }
 
-        private void CmbOnderwerp_SelectionChanged(object sender, SelectionChangedEventArgs e)
-            => LaadVragen();
+        private void CmbOnderwerp_SelectionChanged(object sender,
+            SelectionChangedEventArgs e) => LaadVragen();
 
         private void Filter_Changed(object sender, RoutedEventArgs e)
             => LaadVragen();
@@ -58,24 +57,26 @@ namespace MeerkeuzeVragenApp.UI.Views
         private void BtnVoegVraagToe_Click(object sender, RoutedEventArgs e)
         {
             if (CmbOnderwerp.SelectedValue == null)
-            {
-                ToonFeedback("⚠️ Kies een onderwerp.", false);
-                return;
-            }
+            { ToonFeedback("⚠️ Kies een onderwerp.", false); return; }
+
             if (string.IsNullOrWhiteSpace(TxtNieuweVraag.Text) ||
                 string.IsNullOrWhiteSpace(TxtAntwoordA.Text) ||
                 string.IsNullOrWhiteSpace(TxtAntwoordB.Text) ||
                 string.IsNullOrWhiteSpace(TxtAntwoordC.Text) ||
                 string.IsNullOrWhiteSpace(TxtAntwoordD.Text))
+            { ToonFeedback("⚠️ Vul alle velden in.", false); return; }
+
+            string correctLabel = (CmbCorrect.SelectedItem as ComboBoxItem)?
+                .Content?.ToString() ?? "A";
+            string moeilijkheid = (CmbNieuweMoeilijkheid.SelectedItem as ComboBoxItem)?
+                .Content?.ToString() ?? "Gemiddeld";
+
+            var antwoorden = new List<string>
             {
-                ToonFeedback("⚠️ Vul de vraagtekst en alle antwoorden in.", false);
-                return;
-            }
+                TxtAntwoordA.Text, TxtAntwoordB.Text,
+                TxtAntwoordC.Text, TxtAntwoordD.Text
+            };
 
-            string correctLabel = (CmbCorrect.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "A";
-            string moeilijkheid = (CmbNieuweMoeilijkheid.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Gemiddeld";
-
-            var antwoorden = new List<string> { TxtAntwoordA.Text, TxtAntwoordB.Text, TxtAntwoordC.Text, TxtAntwoordD.Text };
             int correctIndex = correctLabel[0] - 'A';
             string correcteTekst = antwoorden[correctIndex];
 
@@ -89,15 +90,15 @@ namespace MeerkeuzeVragenApp.UI.Views
                 {
                     Tekst = tekst,
                     IsCorrect = i == correctIndex,
-                    Feedback = i != correctIndex ? $"Het correcte antwoord is: {correcteTekst}" : null
+                    Feedback = i != correctIndex
+                        ? $"Het correcte antwoord is: {correcteTekst}" : null
                 }).ToList()
             };
 
             try
             {
-                App.VraagService.VoegVraagToe(vraag);
+                App.VraagManager.VoegVraagToe(vraag);
                 ToonFeedback("✅ Vraag succesvol toegevoegd!", true);
-                // Reset velden
                 TxtNieuweVraag.Text = "";
                 TxtAntwoordA.Text = "";
                 TxtAntwoordB.Text = "";
@@ -107,45 +108,40 @@ namespace MeerkeuzeVragenApp.UI.Views
             }
             catch (Exception ex)
             {
-                ToonFeedback($"❌ Fout: {ex.Message}", false);
+                ToonFeedback($"❌ {ex.Message}", false);
             }
         }
 
         private void BtnNietBeschikbaar_Click(object sender, RoutedEventArgs e)
         {
             if (DgVragen.SelectedItem is not Vraag geselecteerd)
-            {
-                ToonFeedback("⚠️ Selecteer eerst een vraag.", false);
-                return;
-            }
+            { ToonFeedback("⚠️ Selecteer eerst een vraag.", false); return; }
+
             if (!geselecteerd.IsBeschikbaar)
-            {
-                ToonFeedback("⚠️ Deze vraag is al niet beschikbaar.", false);
-                return;
-            }
+            { ToonFeedback("⚠️ Vraag is al niet beschikbaar.", false); return; }
 
             try
             {
-                App.VraagService.StelNietBeschikbaar(geselecteerd.ID);
+                App.VraagManager.StelNietBeschikbaar(geselecteerd.ID);
                 ToonFeedback("✅ Vraag niet meer beschikbaar gesteld.", true);
                 LaadVragen();
             }
             catch (Exception ex)
             {
-                ToonFeedback($"❌ Fout: {ex.Message}", false);
+                ToonFeedback($"❌ {ex.Message}", false);
             }
         }
 
         private void ToonFeedback(string bericht, bool succes)
         {
             TxtFeedback.Foreground = succes
-                ? System.Windows.Media.Brushes.Green
-                : System.Windows.Media.Brushes.Red;
+                ? new SolidColorBrush(Color.FromRgb(129, 199, 132))
+                : new SolidColorBrush(Color.FromRgb(239, 154, 154));
             TxtFeedback.Text = bericht;
         }
 
         private void BtnSluiten_Click(object sender, RoutedEventArgs e)
-            => this.Close();
+            => Close();
     }
 
 }

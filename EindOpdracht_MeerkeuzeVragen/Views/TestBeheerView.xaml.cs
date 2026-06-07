@@ -1,4 +1,5 @@
 ﻿using MeerkeuzevragenApp.DOMEIN;
+using MeerkeuzevragenApp.DOMEIN.Models;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,6 @@ using System.Windows.Shapes;
 
 namespace MeerkeuzeVragenApp.UI.Views
 {
-    /// <summary>
-    /// Interaction logic for TestBeheerView.xaml
-    /// </summary>
     public partial class TestBeheerView : Window
     {
         private Test? _huidigTest;
@@ -31,45 +29,38 @@ namespace MeerkeuzeVragenApp.UI.Views
 
         private void LaadOnderwerpen()
         {
-            var onderwerpen = App.VraagService.GetAlleOnderwerpen();
+            var onderwerpen = App.VraagManager.GetAlleOnderwerpen();
             CmbOnderwerp.ItemsSource = onderwerpen;
             CmbOnderwerp.DisplayMemberPath = "Naam";
             CmbOnderwerp.SelectedValuePath = "ID";
-            if (onderwerpen.Any())
-                CmbOnderwerp.SelectedIndex = 0;
+            if (onderwerpen.Any()) CmbOnderwerp.SelectedIndex = 0;
         }
 
         private void LaadBestaandeTesten()
-        {
-            DgTesten.ItemsSource = App.TestService.GetAlleTests();
-        }
+            => DgTesten.ItemsSource = App.TestManager.GetAlleTests();
 
         private void BtnGenereer_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtTestNaam.Text))
-            {
-                ToonFeedback("⚠️ Vul een testnaam in.", false);
-                return;
-            }
+            { ToonFeedback("⚠️ Vul een testnaam in.", false); return; }
+
             if (CmbOnderwerp.SelectedValue == null)
-            {
-                ToonFeedback("⚠️ Kies een onderwerp.", false);
-                return;
-            }
+            { ToonFeedback("⚠️ Kies een onderwerp.", false); return; }
+
             if (!int.TryParse(TxtAantalVragen.Text, out int aantal) || aantal <= 0)
-            {
-                ToonFeedback("⚠️ Vul een geldig aantal vragen in.", false);
-                return;
-            }
+            { ToonFeedback("⚠️ Vul een geldig aantal in.", false); return; }
 
             try
             {
                 int onderwerpID = (int)CmbOnderwerp.SelectedValue;
-                _huidigTest = App.TestService.GenereerTest(
+                _huidigTest = App.TestManager.GenereerTest(
                     TxtTestNaam.Text.Trim(), onderwerpID, aantal);
 
-                TxtTestInfo.Foreground = System.Windows.Media.Brushes.Black;
-                TxtTestInfo.Text = $"✅ Test '{_huidigTest.Naam}' gegenereerd met {_huidigTest.Vragen.Count} vragen. (ID: {_huidigTest.ID})";
+                TxtTestInfo.Foreground = new SolidColorBrush(
+                    Color.FromRgb(129, 199, 132));
+                TxtTestInfo.Text =
+                    $"✅ '{_huidigTest.Naam}' — {_huidigTest.Vragen.Count} vragen " +
+                    $"(ID: {_huidigTest.ID})";
                 BtnExporteer.IsEnabled = true;
                 LaadBestaandeTesten();
                 ToonFeedback("", true);
@@ -87,20 +78,19 @@ namespace MeerkeuzeVragenApp.UI.Views
             var dialog = new SaveFileDialog
             {
                 Filter = "Tekstbestanden (*.txt)|*.txt",
-                FileName = $"{_huidigTest.Naam}.txt",
-                Title = "Sla test op als..."
+                FileName = $"{_huidigTest.Naam}.txt"
             };
 
             if (dialog.ShowDialog() == true)
             {
                 try
                 {
-                    App.TestService.ExporteerNaarTxt(_huidigTest, dialog.FileName);
-                    ToonFeedback($"✅ Test geëxporteerd naar {dialog.FileName}", true);
+                    _huidigTest.ExporteerNaarTxt(dialog.FileName);
+                    ToonFeedback($"✅ Geëxporteerd naar {dialog.FileName}", true);
                 }
                 catch (Exception ex)
                 {
-                    ToonFeedback($"❌ Fout bij exporteren: {ex.Message}", false);
+                    ToonFeedback($"❌ {ex.Message}", false);
                 }
             }
         }
@@ -108,13 +98,13 @@ namespace MeerkeuzeVragenApp.UI.Views
         private void ToonFeedback(string bericht, bool succes)
         {
             TxtFeedback.Foreground = succes
-                ? System.Windows.Media.Brushes.Green
-                : System.Windows.Media.Brushes.Red;
+                ? new SolidColorBrush(Color.FromRgb(129, 199, 132))
+                : new SolidColorBrush(Color.FromRgb(239, 154, 154));
             TxtFeedback.Text = bericht;
         }
 
         private void BtnSluiten_Click(object sender, RoutedEventArgs e)
-            => this.Close();
+            => Close();
     }
 }
 

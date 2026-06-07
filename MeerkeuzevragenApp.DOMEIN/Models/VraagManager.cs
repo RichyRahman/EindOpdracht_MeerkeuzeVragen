@@ -19,7 +19,7 @@ namespace MeerkeuzevragenApp.DOMEIN.Models
         public List<Onderwerp> GetAlleOnderwerpen() 
             => _repo.GetAlleOnderwerpen();
         
-        public List<Vraag> getBeschikbareVragenPerOnderwerp(int onderwerpID) 
+        public List<Vraag> GetBeschikbareVragenPerOnderwerp(int onderwerpID) 
             => _repo.GetBeschikbareVragenPerOnderwerp(onderwerpID);
 
         public List<Vraag> GetAlleVragenPerOnderwerp(int onderwerpID)

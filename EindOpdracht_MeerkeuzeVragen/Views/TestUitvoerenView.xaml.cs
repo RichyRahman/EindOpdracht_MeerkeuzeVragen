@@ -1,4 +1,5 @@
 ﻿using MeerkeuzevragenApp.DOMEIN;
+using MeerkeuzevragenApp.DOMEIN.Models;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,7 @@ using System.Windows.Shapes;
 
 namespace MeerkeuzeVragenApp.UI.Views
 {
-    /// <summary>
-    /// Interaction logic for TestUitvoerenView.xaml
-    /// </summary>
+    
     public partial class TestUitvoerenView : Window
     {
         private Test? _huidigTest;
@@ -33,15 +32,13 @@ namespace MeerkeuzeVragenApp.UI.Views
 
         private void LaadTesten()
         {
-            var testen = App.TestService.GetAlleTests();
+            var testen = App.TestManager.GetAlleTests();
             CmbTest.ItemsSource = testen;
             CmbTest.DisplayMemberPath = "Naam";
             CmbTest.SelectedValuePath = "ID";
-
             CmbBulkTest.ItemsSource = testen;
             CmbBulkTest.DisplayMemberPath = "Naam";
             CmbBulkTest.SelectedValuePath = "ID";
-
             if (testen.Any())
             {
                 CmbTest.SelectedIndex = 0;
@@ -49,35 +46,26 @@ namespace MeerkeuzeVragenApp.UI.Views
             }
         }
 
-        // ─── INTERACTIEF ────────────────────────────────────────
+        // ── INTERACTIEF ────────────────────────────────────────
 
         private void BtnStartTest_Click(object sender, RoutedEventArgs e)
         {
             if (CmbTest.SelectedValue == null)
-            {
-                MessageBox.Show("Kies een test.", "Fout");
-                return;
-            }
+            { MessageBox.Show("Kies een test.", "Fout"); return; }
             if (string.IsNullOrWhiteSpace(TxtGebruiker.Text))
-            {
-                MessageBox.Show("Vul een gebruikersnaam in.", "Fout");
-                return;
-            }
+            { MessageBox.Show("Vul een naam in.", "Fout"); return; }
 
             int testID = (int)CmbTest.SelectedValue;
-            _huidigTest = App.TestService.GetTestMetVragen(testID);
+            _huidigTest = App.TestManager.GetTestMetVragen(testID);
 
             if (_huidigTest == null || !_huidigTest.Vragen.Any())
-            {
-                MessageBox.Show("Geen vragen gevonden voor deze test.", "Fout");
-                return;
-            }
+            { MessageBox.Show("Geen vragen gevonden.", "Fout"); return; }
 
             _vragen = _huidigTest.Vragen;
             _huidigeVraagIndex = 0;
             _gekozenAntwoorden = new List<string>();
 
-            TxtScore.Visibility = Visibility.Collapsed;
+            ScoreBorder.Visibility = Visibility.Collapsed;
             LstFeedback.ItemsSource = null;
             GrpVraag.Visibility = Visibility.Visible;
             BtnVolgend.Visibility = Visibility.Visible;
@@ -89,56 +77,43 @@ namespace MeerkeuzeVragenApp.UI.Views
         private void ToonVraag()
         {
             var vraag = _vragen[_huidigeVraagIndex];
-            TxtVraagNummer.Text = $"Vraag {_huidigeVraagIndex + 1} van {_vragen.Count}";
+            TxtVraagNummer.Text =
+                $"VRAAG {_huidigeVraagIndex + 1} VAN {_vragen.Count}";
             TxtVraagTekst.Text = vraag.Tekst;
 
-            var radioButtons = new[] { RbA, RbB, RbC, RbD, RbE };
+            var rbs = new[] { RbA, RbB, RbC, RbD, RbE };
+            char[] labels = { 'A', 'B', 'C', 'D', 'E' };
 
-            // Reset alle radio buttons
-            foreach (var rb in radioButtons)
+            foreach (var rb in rbs)
             {
                 rb.IsChecked = false;
                 rb.Visibility = Visibility.Collapsed;
             }
 
-            // Vul antwoorden in
-            var antwoorden = vraag.Antwoorden;
-            char[] labels = { 'A', 'B', 'C', 'D', 'E' };
-
-            for (int i = 0; i < antwoorden.Count && i < radioButtons.Length; i++)
+            var antwoorden = vraag.GetGeschuddeAntwoorden();
+            for (int i = 0; i < antwoorden.Count && i < rbs.Length; i++)
             {
-                radioButtons[i].Content = $"{labels[i]}. {antwoorden[i].Tekst}";
-                radioButtons[i].Visibility = Visibility.Visible;
-                radioButtons[i].Tag = antwoorden[i].Tekst;
+                rbs[i].Content = $"{labels[i]}.  {antwoorden[i].Tekst}";
+                rbs[i].Tag = antwoorden[i].Tekst;
+                rbs[i].Visibility = Visibility.Visible;
             }
 
-            // Laatste vraag → toon Indienen ipv Volgende
-            if (_huidigeVraagIndex == _vragen.Count - 1)
-            {
-                BtnVolgend.Visibility = Visibility.Collapsed;
-                BtnIndienen.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BtnVolgend.Visibility = Visibility.Visible;
-                BtnIndienen.Visibility = Visibility.Collapsed;
-            }
+            bool isLaatste = _huidigeVraagIndex == _vragen.Count - 1;
+            BtnVolgend.Visibility = isLaatste
+                ? Visibility.Collapsed : Visibility.Visible;
+            BtnIndienen.Visibility = isLaatste
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private string? GetGeselecteerdAntwoord()
-        {
-            var radioButtons = new[] { RbA, RbB, RbC, RbD, RbE };
-            return radioButtons.FirstOrDefault(rb => rb.IsChecked == true)?.Tag?.ToString();
-        }
+            => new[] { RbA, RbB, RbC, RbD, RbE }
+               .FirstOrDefault(rb => rb.IsChecked == true)?.Tag?.ToString();
 
         private void BtnVolgend_Click(object sender, RoutedEventArgs e)
         {
             var gekozen = GetGeselecteerdAntwoord();
             if (gekozen == null)
-            {
-                MessageBox.Show("Kies een antwoord.", "Fout");
-                return;
-            }
+            { MessageBox.Show("Kies een antwoord.", "Fout"); return; }
 
             _gekozenAntwoorden.Add(gekozen);
             _huidigeVraagIndex++;
@@ -149,48 +124,39 @@ namespace MeerkeuzeVragenApp.UI.Views
         {
             var gekozen = GetGeselecteerdAntwoord();
             if (gekozen == null)
-            {
-                MessageBox.Show("Kies een antwoord.", "Fout");
-                return;
-            }
+            { MessageBox.Show("Kies een antwoord.", "Fout"); return; }
 
             _gekozenAntwoorden.Add(gekozen);
 
-            try
-            {
-                var (score, feedback) = App.TestService.BerekenScore(
-                    _huidigTest!.ID,
-                    TxtGebruiker.Text.Trim(),
-                    _gekozenAntwoorden);
+            var (score, totaal, feedback) =
+                _huidigTest!.BerekenScore(_gekozenAntwoorden);
 
-                GrpVraag.Visibility = Visibility.Collapsed;
-                BtnVolgend.Visibility = Visibility.Collapsed;
-                BtnIndienen.Visibility = Visibility.Collapsed;
+            GrpVraag.Visibility = Visibility.Collapsed;
+            BtnVolgend.Visibility = Visibility.Collapsed;
+            BtnIndienen.Visibility = Visibility.Collapsed;
 
-                TxtScore.Text = $"🎯 Score: {score}/{_vragen.Count} ({score * 100 / _vragen.Count}%)";
-                TxtScore.Foreground = score >= _vragen.Count / 2
-                    ? System.Windows.Media.Brushes.Green
-                    : System.Windows.Media.Brushes.Red;
-                TxtScore.Visibility = Visibility.Visible;
+            int pct = totaal > 0 ? score * 100 / totaal : 0;
+            bool geslaagd = pct >= 50;
 
-                LstFeedback.ItemsSource = feedback.Any()
-                    ? feedback
-                    : new List<string> { "✅ Alle vragen correct beantwoord!" };
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Fout: {ex.Message}", "Fout");
-            }
+            TxtScore.Text = $"🎯  Score: {score}/{totaal}  ({pct}%)  " +
+                            (geslaagd ? "✅ Geslaagd" : "❌ Niet geslaagd");
+            TxtScore.Foreground = geslaagd
+                ? new SolidColorBrush(Color.FromRgb(129, 199, 132))
+                : new SolidColorBrush(Color.FromRgb(239, 154, 154));
+
+            ScoreBorder.Visibility = Visibility.Visible;
+            LstFeedback.ItemsSource = feedback.Any()
+                ? feedback
+                : new List<string> { "✅ Alle vragen correct beantwoord!" };
         }
 
-        // ─── BULK ────────────────────────────────────────────────
+        // ── BULK ───────────────────────────────────────────────
 
         private void BtnBulkBladeren_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog
             {
-                Filter = "CSV bestanden (*.csv)|*.csv|Tekstbestanden (*.txt)|*.txt",
-                Title = "Kies een bulk antwoordbestand"
+                Filter = "CSV bestanden (*.csv)|*.csv|Tekstbestanden (*.txt)|*.txt"
             };
             if (dialog.ShowDialog() == true)
                 TxtBulkPad.Text = dialog.FileName;
@@ -199,44 +165,42 @@ namespace MeerkeuzeVragenApp.UI.Views
         private void BtnVerwerkBulk_Click(object sender, RoutedEventArgs e)
         {
             if (CmbBulkTest.SelectedValue == null)
-            {
-                TxtBulkFeedback.Text = "⚠️ Kies een test.";
-                return;
-            }
+            { ToonBulkFeedback("⚠️ Kies een test.", false); return; }
             if (string.IsNullOrWhiteSpace(TxtBulkPad.Text))
-            {
-                TxtBulkFeedback.Text = "⚠️ Kies een CSV bestand.";
-                return;
-            }
+            { ToonBulkFeedback("⚠️ Kies een CSV bestand.", false); return; }
 
             try
             {
                 int testID = (int)CmbBulkTest.SelectedValue;
-                var resultaten = App.TestService.VerwerkBulk(testID, TxtBulkPad.Text);
+                var resultaten = App.TestManager.VerwerkBulk(testID, TxtBulkPad.Text);
 
-                var test = App.TestService.GetTestMetVragen(testID);
-                int aantalVragen = test?.Vragen.Count ?? 1;
-
-                var weergave = resultaten.Select(r => new
+                DgBulkResultaten.ItemsSource = resultaten.Select(r => new
                 {
                     GebruikerID = r.gebruikerID,
-                    Score = $"{r.score}/{aantalVragen}",
-                    Resultaat = r.score >= aantalVragen / 2 ? "✅ Geslaagd" : "❌ Niet geslaagd"
+                    Score = $"{r.score}/{r.totaal}",
+                    Resultaat = r.score * 100 / (r.totaal > 0 ? r.totaal : 1) >= 50
+                        ? "✅ Geslaagd" : "❌ Niet geslaagd"
                 }).ToList();
 
-                DgBulkResultaten.ItemsSource = weergave;
-                TxtBulkFeedback.Foreground = System.Windows.Media.Brushes.Green;
-                TxtBulkFeedback.Text = $"✅ {resultaten.Count} gebruikers verwerkt.";
+                ToonBulkFeedback(
+                    $"✅ {resultaten.Count} gebruikers verwerkt.", true);
             }
             catch (Exception ex)
             {
-                TxtBulkFeedback.Foreground = System.Windows.Media.Brushes.Red;
-                TxtBulkFeedback.Text = $"❌ Fout: {ex.Message}";
+                ToonBulkFeedback($"❌ {ex.Message}", false);
             }
         }
 
+        private void ToonBulkFeedback(string bericht, bool succes)
+        {
+            TxtBulkFeedback.Foreground = succes
+                ? new SolidColorBrush(Color.FromRgb(129, 199, 132))
+                : new SolidColorBrush(Color.FromRgb(239, 154, 154));
+            TxtBulkFeedback.Text = bericht;
+        }
+
         private void BtnSluiten_Click(object sender, RoutedEventArgs e)
-            => this.Close();
+            => Close();
     }
 }
 

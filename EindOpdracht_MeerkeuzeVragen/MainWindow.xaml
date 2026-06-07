@@ -5,19 +5,96 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MeerkeuzeVragenApp.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Meerkeuzevragen Applicatie" FontSize="24" FontWeight="Bold"
-                       HorizontalAlignment="Center" Margin="0,0,0,30"/>
-            <Button Content="📝  Test Opstellen" Width="250" Height="45" FontSize="14"
-                    Click="BtnTestOpstellen_Click"/>
-            <Button Content="📥  Data Importeren" Width="250" Height="45" FontSize="14"
-                    Click="BtnImport_Click"/>
-            <Button Content="➕  Vragen Beheren" Width="250" Height="45" FontSize="14"
-                    Click="BtnVragenBeheren_Click"/>
-            <Button Content="▶️  Test Uitvoeren" Width="250" Height="45" FontSize="14"
-                    Click="BtnTestUitvoeren_Click"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2A2A3E" Padding="32,28">
+            <StackPanel>
+                <TextBlock Text="📝" FontSize="36"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,10"/>
+                <TextBlock Text="Meerkeuzevragen"
+                           FontSize="24" FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource TextPrimary}"/>
+                <TextBlock Text="Applicatie"
+                           FontSize="24" FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource Accent}"/>
+                <TextBlock Text="Richy Rahman — Programmeren Gevorderd 1"
+                           FontSize="11"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource TextSecondary}"
+                           Margin="0,8,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Navigatie knoppen -->
+        <StackPanel Grid.Row="1"
+                    VerticalAlignment="Center"
+                    Margin="40,0">
+
+            <Button Style="{StaticResource BtnPrimary}"
+                    Height="56" Margin="0,0,0,12"
+                    Click="BtnTestOpstellen_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="🎲" FontSize="18" Margin="0,0,10,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="Test Opstellen" FontSize="15"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource BtnSecondary}"
+                    Height="56" Margin="0,0,0,12"
+                    Click="BtnImport_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="📥" FontSize="18" Margin="0,0,10,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="Data Importeren" FontSize="15"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource BtnSecondary}"
+                    Height="56" Margin="0,0,0,12"
+                    Click="BtnVragenBeheren_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="⚙️" FontSize="18" Margin="0,0,10,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="Vragen Beheren" FontSize="15"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource BtnWarning}"
+                    Height="56"
+                    Click="BtnTestUitvoeren_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="▶️" FontSize="18" Margin="0,0,10,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="Test Uitvoeren" FontSize="15"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Padding="20,12"
+                BorderBrush="{StaticResource Border}"
+                BorderThickness="0,1,0,0">
+            <TextBlock Text="© 2026 Meerkeuzevragen App"
+                       FontSize="11"
+                       Foreground="{StaticResource TextSecondary}"
+                       HorizontalAlignment="Center"/>
+        </Border>
     </Grid>
 </Window>
