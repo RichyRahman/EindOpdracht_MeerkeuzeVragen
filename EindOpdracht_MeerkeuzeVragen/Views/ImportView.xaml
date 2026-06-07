@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Data Importeren" Height="480" Width="580"
         WindowStartupLocation="CenterScreen"
+        Background="#1E1E2E"
         ResizeMode="NoResize">
     <Grid Margin="32">
         <Grid.RowDefinitions>

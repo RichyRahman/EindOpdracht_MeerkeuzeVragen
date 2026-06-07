@@ -58,11 +58,12 @@ namespace MeerkeuzevragenApp.DATA.Repositories
         public List<Vraag> GetAlleVragen()
         {
             var lijst = new List<Vraag>();
-            string sql = @"SELECT v.ID, v.onderwerpID, v.Moeilijkheidsgraad, 
-                                  v.Tekst, v.isBeschikbaar,
-                                  o.Naam as OnderwerpNaam
-                           FROM Vraag v
-                           JOIN Onderwerp o ON v.onderwerpID = o.ID";
+            string sql = @"SELECT v.ID as VraagID, 
+                          v.onderwerpID, 
+                          v.Moeilijkheidsgraad, 
+                          v.Tekst as VraagTekst, 
+                          v.isBeschikbaar
+                   FROM Vraag v";
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -72,8 +73,14 @@ namespace MeerkeuzevragenApp.DATA.Repositories
 
             while (reader.Read())
             {
-                var vraag = LeesVraag(reader);
-                lijst.Add(vraag);
+                lijst.Add(new Vraag
+                {
+                    ID = reader.GetInt32("VraagID"),
+                    OnderwerpID = reader.GetInt32("onderwerpID"),
+                    Moeilijkheidsgraad = reader.GetString("Moeilijkheidsgraad"),
+                    Tekst = reader.GetString("VraagTekst"),
+                    IsBeschikbaar = reader.GetBoolean("isBeschikbaar")
+                });
             }
 
             foreach (var vraag in lijst)
@@ -87,10 +94,10 @@ namespace MeerkeuzevragenApp.DATA.Repositories
         {
             var lijst = new List<Vraag>();
             string sql = @"SELECT ID, onderwerpID, Moeilijkheidsgraad, 
-                                  Tekst, isBeschikbaar
-                           FROM Vraag 
-                           WHERE onderwerpID = @OnderwerpID 
-                           AND isBeschikbaar = TRUE";
+                          Tekst, isBeschikbaar
+                   FROM Vraag 
+                   WHERE onderwerpID = @OnderwerpID 
+                   AND isBeschikbaar = TRUE";
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -112,9 +119,9 @@ namespace MeerkeuzevragenApp.DATA.Repositories
         {
             var lijst = new List<Vraag>();
             string sql = @"SELECT ID, onderwerpID, Moeilijkheidsgraad,
-                                  Tekst, isBeschikbaar
-                           FROM Vraag 
-                           WHERE onderwerpID = @OnderwerpID";
+                          Tekst, isBeschikbaar
+                   FROM Vraag 
+                   WHERE onderwerpID = @OnderwerpID";
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -131,6 +138,7 @@ namespace MeerkeuzevragenApp.DATA.Repositories
 
             return lijst;
         }
+
 
         public Vraag GetVraagMetAntwoorden(int vraagID)
         {

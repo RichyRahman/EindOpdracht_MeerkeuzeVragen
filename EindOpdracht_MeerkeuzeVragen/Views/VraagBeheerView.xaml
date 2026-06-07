@@ -20,7 +20,7 @@
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             <TextBlock Text="Vragen Beheren" FontSize="22" FontWeight="Bold"/>
             <TextBlock Text="Voeg vragen toe of stel ze niet meer beschikbaar"
-                       FontSize="12" Foreground="{StaticResource TextSecondary}"
+                       FontSize="12" Foreground="{StaticResource TextPrimary}"
                        Margin="0,4,0,0"/>
         </StackPanel>
 

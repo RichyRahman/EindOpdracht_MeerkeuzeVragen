@@ -54,24 +54,28 @@
             </Button>
 
             <Button Style="{StaticResource BtnSecondary}"
-                    Height="56" Margin="0,0,0,12"
-                    Click="BtnImport_Click">
+        Height="56" Margin="0,0,0,12"
+        Click="BtnImport_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="📥" FontSize="18" Margin="0,0,10,0"
-                               VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextPrimary}"/>
                     <TextBlock Text="Data Importeren" FontSize="15"
-                               VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextPrimary}"/>
                 </StackPanel>
             </Button>
 
             <Button Style="{StaticResource BtnSecondary}"
-                    Height="56" Margin="0,0,0,12"
-                    Click="BtnVragenBeheren_Click">
+        Height="56" Margin="0,0,0,12"
+        Click="BtnVragenBeheren_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="⚙️" FontSize="18" Margin="0,0,10,0"
-                               VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextPrimary}"/>
                     <TextBlock Text="Vragen Beheren" FontSize="15"
-                               VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextPrimary}"/>
                 </StackPanel>
             </Button>
 
