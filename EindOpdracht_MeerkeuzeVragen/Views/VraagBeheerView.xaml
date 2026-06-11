@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MeerkeuzeVragenApp.UI.Views"
         mc:Ignorable="d"
         Title="Vragen Beheren" Height="600" Width="800"
+        Background="#1E1E2E"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <Grid.RowDefinitions>
