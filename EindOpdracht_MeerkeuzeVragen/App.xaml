@@ -199,15 +199,38 @@
             <Setter Property="FontSize"    Value="13"/>
             <Setter Property="Padding"     Value="16,8"/>
             <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="{StaticResource BgCard}"/>
-                    <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1,1,1,0"
+                        CornerRadius="6,6,0,0"
+                        Padding="{TemplateBinding Padding}"
+                        VerticalAlignment="Bottom">
+                            <ContentPresenter x:Name="content"
+                                      ContentSource="Header"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource BgCard}"/>
+                                <Setter Property="Foreground"
+                                Value="{StaticResource TextPrimary}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource Accent}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- ── DATAGRID ── -->

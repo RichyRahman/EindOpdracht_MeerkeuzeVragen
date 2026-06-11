@@ -247,7 +247,7 @@ namespace MeerkeuzevragenApp.DATA.Repositories
         private List<Antwoord> GetAntwoordenVoorVraag(int vraagID)
         {
             var lijst = new List<Antwoord>();
-            string sql = @"SELECT ID, vraagID, Tekst, isCorrect, Feedback
+            string sql = @"SELECT vraagID, Tekst, isCorrect, Feedback
                            FROM Antwoord WHERE vraagID = @VraagID";
 
             using var conn = _db.GetConnection();
