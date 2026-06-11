@@ -1,7 +1,7 @@
 # MeerkeuzevragenApp — README
 
 ## Beschrijving
-Een WPF-applicatie voor het opstellen, importeren, beheren en uitvoeren van meerkeuzevragen, gebouwd met een 3-lagenarchitectuur in C# en MySQL.
+Een WPF-applicatie voor het opstellen, importeren, beheren en uitvoeren van meerkeuzevragen, gebouwd met een 3-lagenarchitectuur in C# en MySQL. Businesslogica zit in de domeinklassen zelf en wordt gecoördineerd via managerklassen — alle databanktoegang verloopt via pure ADO.NET zonder externe frameworks.
 
 ---
 
@@ -10,7 +10,7 @@ Een WPF-applicatie voor het opstellen, importeren, beheren en uitvoeren van meer
 | Software | Versie |
 |---|---|
 | Visual Studio | 2022 of nieuwer |
-| .NET | 8.0 |
+| .NET | 9.0 |
 | MySQL Server | 8.0 of nieuwer |
 | MySQL Workbench | Optioneel |
 
@@ -92,10 +92,18 @@ CREATE TABLE GemaakteVraag(
 ```
 
 ### 2. Connectiestring instellen
-Open `App.xaml.cs` in het UI-project en pas de connectiestring aan:
-```csharp
-string connectionString = "Server=localhost;Port=3306;Database=meerkeuzeDB;User ID=root;Password=jouwwachtwoord;";
+De connectiestring wordt **niet** in de UI-laag bewaard, maar uitsluitend gelezen door de DATA-laag via `App.config`. Open `App.config` in het **UI-project** (`MeerkeuzeVragenApp.UI`) en pas de connectiestring aan:
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <connectionStrings>
+    <add name="MeerkeuzeDB"
+         connectionString="Server=localhost;Port=3306;Database=meerkeuzeDB;User ID=root;Password=jouwwachtwoord;"
+         providerName="MySql.Data.MySqlClient"/>
+  </connectionStrings>
+</configuration>
 ```
+De klasse `DatabaseConnection` (in `MeerkeuzevragenApp.DATA`) leest deze string in via `ConfigurationManager` — de UI-laag kent enkel de `DatabaseConnection`-klasse, niet de connectiestring zelf.
 
 ### 3. NuGet packages herstellen
 Open de solution in Visual Studio en klik:
@@ -104,10 +112,12 @@ Build → Restore NuGet Packages
 ```
 
 Gebruikte packages:
-- `MySql.Data` — MySQL connectie
-- `Dapper` — ORM voor SQL queries
-- `Moq` — Mocking voor unit tests
+- `MySql.Data` — MySQL connectie (ADO.NET)
+- `System.Configuration.ConfigurationManager` — inlezen `App.config`
 - `xunit` — Unit testing framework
+- `xunit.runner.visualstudio` — Test Explorer integratie
+
+> Er worden **geen** ORM- of mocking-frameworks gebruikt (geen Dapper, geen Entity Framework, geen Moq). Alle databanktoegang gebeurt via pure ADO.NET (`MySqlConnection`, `MySqlCommand`, `MySqlDataReader`).
 
 ### 4. Applicatie starten
 Stel `MeerkeuzeVragenApp.UI` in als startup project en druk op `F5`.
@@ -123,29 +133,29 @@ Stel `MeerkeuzeVragenApp.UI` in als startup project en druk op `F5`.
 4. Kies een moeilijkheidsgraad
 5. Klik op **Importeer**
 
-Ondersteunde bestandsformaten:
-- Standaard formaat (antwoorden onderaan na `Antwoorden`)
-- C#/LINQ formaat (`Correct: X` per vraag, 5 antwoordopties)
+Ondersteunde bestandsformaten worden automatisch herkend via het `ITestParser`-mechanisme (zie [Schaalbaarheid: ITestParser](#schaalbaarheid-itestparser)):
+- **Standaard formaat** — antwoorden onderaan na een regel `Antwoorden`
+- **Correct-formaat** — `Correct: X` direct na elke vraag, 5 antwoordopties (A–E)
 
 ### Test opstellen
 1. Klik op **Test Opstellen**
 2. Vul een testnaam in
 3. Kies een onderwerp en aantal vragen
-4. Klik op **Genereer Test**
-5. Optioneel: exporteer naar `.txt` via **Exporteer naar .txt**
+4. Klik op **Genereer Test** — er wordt een willekeurige selectie van beschikbare vragen gemaakt
+5. Optioneel: exporteer naar `.txt` via **Exporteer naar .txt** (antwoorden worden hierbij geschud per vraag)
 
 ### Vragen beheren
 1. Klik op **Vragen Beheren**
 2. Filter op onderwerp en beschikbaarheid
-3. Voeg nieuwe vragen toe via het formulier bovenaan
-4. Selecteer een vraag en klik **Stel Niet Beschikbaar** om te deactiveren
+3. Voeg nieuwe vragen toe via het formulier bovenaan — validatie gebeurt in de domeinklasse `Vraag` zelf
+4. Selecteer een vraag en klik **Stel Niet Beschikbaar** om te deactiveren (soft delete, vraag blijft in de databank)
 
 ### Test uitvoeren
 **Interactief:**
 1. Klik op **Test Uitvoeren**
 2. Kies een test en vul een gebruikersnaam in
-3. Klik **Start Test** en beantwoord de vragen
-4. Na het indienen zie je score en feedback
+3. Klik **Start** en beantwoord de vragen — antwoorden worden per vraag geschud
+4. Na het indienen zie je score en feedback per fout beantwoorde vraag
 
 **Bulk verwerking:**
 1. Ga naar tabblad **Bulk Verwerking**
@@ -160,15 +170,141 @@ IDGebruiker,Antwoorden
 
 ---
 
+## Architectuur
+
+De applicatie volgt een **3-lagenarchitectuur** waarbij het domein centraal staat. Zowel de DATA-laag als de UI-laag kennen het domein, maar het domein kent geen van beide.
+
+```
+MeerkeuzevragenApp.DOMEIN  (centraal — geen dependencies)
+        ↑                              ↑
+MeerkeuzevragenApp.DATA      MeerkeuzeVragenApp.UI
+   (implementeert interfaces)   (gebruikt managers)
+```
+
+### MeerkeuzevragenApp.DOMEIN
+Het hart van de applicatie. Bevat geen verwijzingen naar andere projecten.
+
+- **Model/** — domeinklassen met ingebouwde validatie en businesslogica:
+  - `Vraag` — `Valideer()`, `IsCorrectAntwoord()`, `GetFeedback()`, `GetGeschuddeAntwoorden()`
+  - `Antwoord`, `Onderwerp`, `Gebruiker`, `GemaakteTest`, `GemaakteVraag`
+  - `Test` — `BerekenScore()`, `ExporteerNaarTxt()`
+  - `VraagManager` — coördineert vraagbeheer via `IVraagRepository`
+  - `TestManager` — coördineert testgeneratie, import en bulkverwerking via `ITestRepository`, `IVraagRepository` en `ITestParser`
+- **Interfaces/** — `IVraagRepository`, `ITestRepository`, `ITestParser`
+- **Exceptions/** — `DomeinException`
+
+Validatie gebeurt in de **setters** van de domeinklassen zelf (bv. `Vraag.Tekst` gooit een `DomeinException` bij een lege waarde), en businessregels zoals scoreberekening en feedback zitten als methoden **op** de domeinobjecten — niet in een afzonderlijke servicelaag.
+
+### MeerkeuzevragenApp.DATA
+Implementeert de interfaces uit het DOMEIN met pure ADO.NET.
+
+- `DatabaseConnection` — leest de connectiestring uit `App.config` via `ConfigurationManager`
+- **Repositories/**
+  - `VraagRepository : IVraagRepository`
+  - `TestRepository : ITestRepository`
+- **Parsers/**
+  - `StandaardFormaatParser : ITestParser`
+  - `CorrectFormaatParser : ITestParser`
+
+Alle databankoperaties gebruiken `MySqlConnection`, `MySqlCommand` en `MySqlDataReader` met geparametriseerde queries. Het toevoegen van een vraag met antwoorden gebeurt binnen een transactie (`BeginTransaction` / `Commit` / `Rollback`).
+
+### MeerkeuzeVragenApp.UI
+WPF-schermen die uitsluitend communiceren met `VraagManager` en `TestManager` uit het DOMEIN. De UI heeft geen kennis van de DATA-laag, ADO.NET of de connectiestring — deze instanties worden eenmalig samengesteld in `App.xaml.cs`:
+
+```csharp
+var db = new DatabaseConnection();
+var vraagRepo = new VraagRepository(db);
+var testRepo = new TestRepository(db);
+var parsers = new List<ITestParser>
+{
+    new CorrectFormaatParser(),
+    new StandaardFormaatParser()
+};
+
+VraagManager = new VraagManager(vraagRepo);
+TestManager = new TestManager(testRepo, vraagRepo, parsers);
+```
+
+- `MainWindow` — navigatie
+- `Views/ImportView`, `Views/VraagBeheerView`, `Views/TestBeheerView`, `Views/TestUitvoerenView`
+
+### MeerkeuzevragenApp.TESTS
+xUnit-testproject dat **rechtstreeks de domeinklassen** test — zonder Moq, zonder database.
+
+---
+
+## Schaalbaarheid: ITestParser
+
+Om nieuwe importformaten te ondersteunen zonder bestaande code aan te passen, definieert het DOMEIN de interface:
+
+```csharp
+public interface ITestParser
+{
+    bool KanVerwerken(string[] regels);
+    List<Vraag> Parse(string[] regels, int onderwerpID, string moeilijkheid);
+}
+```
+
+`TestManager.ImporteerBestand()` doorloopt de geregistreerde parsers en gebruikt de eerste die `KanVerwerken()` met `true` beantwoordt. Een nieuw bestandsformaat toevoegen vereist enkel:
+
+1. Een nieuwe klasse in `MeerkeuzevragenApp.DATA/Parsers/` die `ITestParser` implementeert
+2. Deze klasse toevoegen aan de parserlijst in `App.xaml.cs`
+
+Bestaande parsers, managers en repositories blijven ongewijzigd.
+
+---
+
 ## Projectstructuur
 
 ```
-MeerkeuzevragenApp.sln
-├── MeerkeuzevragenApp.DOMAIN    → Domeinmodellen
-├── MeerkeuzevragenApp.DATA      → Repositories + DB connectie
-├── MeerkeuzevragenApp.BUSINESS  → Services + businesslogica
-├── MeerkeuzeVragenApp.UI        → WPF schermen
-└── MeerkeuzevragenApp.TESTS     → XUnit unit tests
+EindOpdracht_MeerkeuzeVragen.sln
+├── MeerkeuzevragenApp.DOMEIN
+│   ├── Model/
+│   │   ├── Vraag.cs
+│   │   ├── Antwoord.cs
+│   │   ├── Onderwerp.cs
+│   │   ├── Test.cs
+│   │   ├── Gebruiker.cs
+│   │   ├── GemaakteTest.cs
+│   │   ├── GemaakteVraag.cs
+│   │   ├── VraagManager.cs
+│   │   └── TestManager.cs
+│   ├── Interfaces/
+│   │   ├── IVraagRepository.cs
+│   │   ├── ITestRepository.cs
+│   │   └── ITestParser.cs
+│   └── Exceptions/
+│       └── DomeinException.cs
+├── MeerkeuzevragenApp.DATA
+│   ├── DatabaseConnection.cs
+│   ├── App.config
+│   ├── Repositories/
+│   │   ├── VraagRepository.cs
+│   │   └── TestRepository.cs
+│   └── Parsers/
+│       ├── StandaardFormaatParser.cs
+│       └── CorrectFormaatParser.cs
+├── MeerkeuzeVragenApp.UI
+│   ├── App.xaml(.cs)
+│   ├── MainWindow.xaml(.cs)
+│   └── Views/
+│       ├── ImportView.xaml(.cs)
+│       ├── VraagBeheerView.xaml(.cs)
+│       ├── TestBeheerView.xaml(.cs)
+│       └── TestUitvoerenView.xaml(.cs)
+└── MeerkeuzevragenApp.TESTS
+    ├── VraagTests.cs
+    ├── AntwoordTests.cs
+    ├── OnderwerpTests.cs
+    └── TestTests.cs
+```
+
+**Project references:**
+```
+DOMEIN  → geen dependencies
+DATA    → DOMEIN
+UI      → DOMEIN, DATA
+TESTS   → DOMEIN
 ```
 
 ---
@@ -177,7 +313,10 @@ MeerkeuzevragenApp.sln
 ```
 Test → Run All Tests
 ```
-21 tests verwacht, verdeeld over:
-- `VraagServiceTests` — 10 tests
-- `TestServiceTests` — 8 tests
-- `ImportServiceTests` — 3 tests
+33 tests verwacht, verdeeld over de domeinklassen:
+- `VraagTests` — 13 tests (validatie, `IsCorrectAntwoord`, `GetFeedback`, `GetGeschuddeAntwoorden`, `Valideer`)
+- `TestTests` — 10 tests (validatie, `BerekenScore`, `ExporteerNaarTxt`)
+- `AntwoordTests` — 4 tests (validatie, constructor)
+- `OnderwerpTests` — 6 tests (validatie, constructors, `ToString`)
+
+Alle tests werken **rechtstreeks op domeinobjecten** — er is geen database, geen Mock en geen servicelaag nodig om deze uit te voeren.
