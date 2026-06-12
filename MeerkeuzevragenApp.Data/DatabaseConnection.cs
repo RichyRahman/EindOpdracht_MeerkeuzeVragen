@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,9 +16,9 @@ namespace MeerkeuzevragenApp.DATA
                 _connectionString = ConfigurationManager.ConnectionStrings["MeerkeuzeDB"].ConnectionString;
             }
 
-        public MySqlConnection GetConnection()
+        public SqlConnection GetConnection()
         {
-            return new MySqlConnection(_connectionString);
+            return new SqlConnection(_connectionString);
         }
     }
 }

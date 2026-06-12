@@ -1,9 +1,10 @@
 ﻿using MeerkeuzevragenApp.DOMEIN;
 using MeerkeuzevragenApp.DOMEIN.Interfaces;
 using MeerkeuzevragenApp.DOMEIN.Models;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,8 @@ namespace MeerkeuzevragenApp.DATA.Repositories
         public int MaakTestAan(Test test)
         {
             string sql = @"INSERT INTO Test (Naam, onderwerpID) 
-                           VALUES (@Naam, @OnderwerpID)";
+                           VALUES (@Naam, @OnderwerpID);
+                           SELECT CAST (SCOPE_IDENTITY() AS INT);";
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -30,9 +32,8 @@ namespace MeerkeuzevragenApp.DATA.Repositories
             cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@Naam", test.Naam);
             cmd.Parameters.AddWithValue("@OnderwerpID", test.OnderwerpID);
-            cmd.ExecuteNonQuery();
 
-            return (int)cmd.LastInsertedId;
+            return (int)cmd.ExecuteScalar();
         }
 
         public void VoegTestVraagToe(int testID, int vraagID)
@@ -127,7 +128,8 @@ namespace MeerkeuzevragenApp.DATA.Repositories
         public int SlaGemaakteTestOp(GemaakteTest gemaakteTest)
         {
             string sql = @"INSERT INTO GemaakteTest (gebruikerID, testID) 
-                           VALUES (@GebruikerID, @TestID)";
+                           VALUES (@GebruikerID, @TestID);
+                           SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -135,9 +137,8 @@ namespace MeerkeuzevragenApp.DATA.Repositories
             cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@GebruikerID", gemaakteTest.GebruikerID);
             cmd.Parameters.AddWithValue("@TestID", gemaakteTest.TestID);
-            cmd.ExecuteNonQuery();
 
-            return (int)cmd.LastInsertedId;
+            return (int)cmd.ExecuteScalar();
         }
 
         public void SlaGemaakteVraagOp(GemaakteVraag gemaakteVraag)
@@ -155,7 +156,7 @@ namespace MeerkeuzevragenApp.DATA.Repositories
             cmd.ExecuteNonQuery();
         }
 
-        public Vraag? GetVraagMetAntwoorden(MySqlConnection conn, int vraagID)
+        public Vraag? GetVraagMetAntwoorden(SqlConnection conn, int vraagID)
         {
             Vraag? vraag = null;
 

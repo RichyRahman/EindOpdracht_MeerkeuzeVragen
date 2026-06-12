@@ -1,9 +1,10 @@
 ﻿using MeerkeuzevragenApp.DOMEIN;
 using MeerkeuzevragenApp.DOMEIN.Interfaces;
 using MeerkeuzevragenApp.DOMEIN.Models;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,16 +44,16 @@ namespace MeerkeuzevragenApp.DATA.Repositories
 
         public int VoegOnderwerpToe(string naam)
         {
-            string sql = "INSERT INTO Onderwerp (Naam) VALUES (@Naam)";
+            string sql = @"INSERT INTO Onderwerp (Naam) VALUES (@Naam);
+                           SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using var conn = _db.GetConnection();
             conn.Open();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@Naam", naam);
-            cmd.ExecuteNonQuery();
 
-            return (int)cmd.LastInsertedId;
+            return (int)cmd.ExecuteScalar();
         }
 
         public List<Vraag> GetAlleVragen()
@@ -97,7 +98,7 @@ namespace MeerkeuzevragenApp.DATA.Repositories
                           Tekst, isBeschikbaar
                    FROM Vraag 
                    WHERE onderwerpID = @OnderwerpID 
-                   AND isBeschikbaar = TRUE";
+                   AND isBeschikbaar = 1";
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -173,8 +174,9 @@ namespace MeerkeuzevragenApp.DATA.Repositories
                 // Eerst de vraag toevoegen
 
                 string sqlVraag = @"INSERT INTO Vraag 
-                                    (onderwerpID, Moeilijkheidsgraad, Tekst, isBeschikbaar)
-                                    VALUES (@OnderwerpID, @Moeilijkheid, @Tekst, @IsBeschikbaar)";
+                            (onderwerpID, Moeilijkheidsgraad, Tekst, isBeschikbaar)
+                            VALUES (@OnderwerpID, @Moeilijkheid, @Tekst, @IsBeschikbaar);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 using var cmdVraag = conn.CreateCommand();
                 cmdVraag.Transaction = transaction;
@@ -183,9 +185,8 @@ namespace MeerkeuzevragenApp.DATA.Repositories
                 cmdVraag.Parameters.AddWithValue("@Moeilijkheid", vraag.Moeilijkheidsgraad);
                 cmdVraag.Parameters.AddWithValue("@Tekst", vraag.Tekst);
                 cmdVraag.Parameters.AddWithValue("@IsBeschikbaar", vraag.IsBeschikbaar);
-                cmdVraag.ExecuteNonQuery();
 
-                int vraagID = (int)cmdVraag.LastInsertedId;
+                int vraagID = (int)cmdVraag.ExecuteScalar();
 
 
                 // Nu de antwoorden toevoegen
@@ -232,7 +233,7 @@ namespace MeerkeuzevragenApp.DATA.Repositories
             cmd.ExecuteNonQuery();
         }
 
-        private Vraag LeesVraag(MySqlDataReader reader)
+        private Vraag LeesVraag(SqlDataReader reader)
         {
             return new Vraag
             {
