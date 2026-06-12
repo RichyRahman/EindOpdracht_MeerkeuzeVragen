@@ -1,0 +1,401 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36">
+  <diagram name="Page-1" id="3YeBEkcRrVzBXGEVdMCJ">
+    <mxGraphModel dx="1313" dy="1102" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1A1A2E;" value="Databankschema (ERD) - meerkeuzeDB" vertex="1">
+          <mxGeometry height="40" width="900" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="text;html=1;strokeColor=#9999BB;fillColor=#F5F5FA;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=12;spacing=10;arcSize=8;" value="Crow&#39;s Foot notatie&#xa;||  exact één&#xa;|{  één of meer&#xa;o{  nul of meer&#xa;o|  nul of één&#xa;&#xa;PK = Primary Key&#xa;FK = Foreign Key" vertex="1">
+          <mxGeometry height="170" width="260" x="1380" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_onderwerp" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="Onderwerp" vertex="1">
+          <mxGeometry height="90" width="220" x="40" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_onderwerp_r1" parent="tbl_onderwerp" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="220" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_onderwerp_r1c1" parent="tbl_onderwerp_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=11;align=center;" value="PK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_onderwerp_r1c2" parent="tbl_onderwerp_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="ID  -  INT IDENTITY(1,1)" vertex="1">
+          <mxGeometry height="30" width="180" x="40" as="geometry">
+            <mxRectangle height="30" width="180" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_onderwerp_r2" parent="tbl_onderwerp" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="220" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_onderwerp_r2c1" parent="tbl_onderwerp_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_onderwerp_r2c2" parent="tbl_onderwerp_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="Naam  -  VARCHAR(255) NOT NULL" vertex="1">
+          <mxGeometry height="30" width="180" x="40" as="geometry">
+            <mxRectangle height="30" width="180" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="Vraag" vertex="1">
+          <mxGeometry height="180" width="260" x="400" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_vraag_r1" parent="tbl_vraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_vraag_r1c1" parent="tbl_vraag_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=11;align=center;" value="PK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r1c2" parent="tbl_vraag_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="ID  -  INT IDENTITY(1,1)" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r2" parent="tbl_vraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_vraag_r2c1" parent="tbl_vraag_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=11;align=center;" value="FK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r2c2" parent="tbl_vraag_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="onderwerpID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r3" parent="tbl_vraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_vraag_r3c1" parent="tbl_vraag_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r3c2" parent="tbl_vraag_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="Moeilijkheidsgraad  -  VARCHAR(255) NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r4" parent="tbl_vraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_vraag_r4c1" parent="tbl_vraag_r4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r4c2" parent="tbl_vraag_r4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="Tekst  -  VARCHAR(255) NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r5" parent="tbl_vraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_vraag_r5c1" parent="tbl_vraag_r5" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_vraag_r5c2" parent="tbl_vraag_r5" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="isBeschikbaar  -  BIT DEFAULT 1" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="Antwoord" vertex="1">
+          <mxGeometry height="150" width="280" x="780" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_antwoord_r1" parent="tbl_antwoord" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_antwoord_r1c1" parent="tbl_antwoord_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=11;align=center;" value="PK / FK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r1c2" parent="tbl_antwoord_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="vraagID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="60" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r2" parent="tbl_antwoord" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_antwoord_r2c1" parent="tbl_antwoord_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=11;align=center;" value="PK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r2c2" parent="tbl_antwoord_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="Tekst  -  VARCHAR(255) NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="60" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r3" parent="tbl_antwoord" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_antwoord_r3c1" parent="tbl_antwoord_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r3c2" parent="tbl_antwoord_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="isCorrect  -  BIT DEFAULT 0" vertex="1">
+          <mxGeometry height="30" width="220" x="60" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r4" parent="tbl_antwoord" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_antwoord_r4c1" parent="tbl_antwoord_r4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_antwoord_r4c2" parent="tbl_antwoord_r4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="Feedback  -  VARCHAR(255)" vertex="1">
+          <mxGeometry height="30" width="220" x="60" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_test" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="Test" vertex="1">
+          <mxGeometry height="120" width="260" x="400" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_test_r1" parent="tbl_test" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_test_r1c1" parent="tbl_test_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=11;align=center;" value="PK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_test_r1c2" parent="tbl_test_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="ID  -  INT IDENTITY(1,1)" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_test_r2" parent="tbl_test" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_test_r2c1" parent="tbl_test_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_test_r2c2" parent="tbl_test_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="Naam  -  VARCHAR(255) NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_test_r3" parent="tbl_test" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_test_r3c1" parent="tbl_test_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=11;align=center;" value="FK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_test_r3c2" parent="tbl_test_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="onderwerpID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_testvragen" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="TestVragen" vertex="1">
+          <mxGeometry height="90" width="280" x="780" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_testvragen_r1" parent="tbl_testvragen" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_testvragen_r1c1" parent="tbl_testvragen_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=11;align=center;" value="PK / FK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_testvragen_r1c2" parent="tbl_testvragen_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="testID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="60" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_testvragen_r2" parent="tbl_testvragen" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_testvragen_r2c1" parent="tbl_testvragen_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=11;align=center;" value="PK / FK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_testvragen_r2c2" parent="tbl_testvragen_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="vraagID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="60" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gebruiker" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="Gebruiker" vertex="1">
+          <mxGeometry height="90" width="220" x="40" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gebruiker_r1" parent="tbl_gebruiker" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="220" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gebruiker_r1c1" parent="tbl_gebruiker_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=11;align=center;" value="PK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gebruiker_r1c2" parent="tbl_gebruiker_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="ID  -  INT IDENTITY(1,1)" vertex="1">
+          <mxGeometry height="30" width="180" x="40" as="geometry">
+            <mxRectangle height="30" width="180" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gebruiker_r2" parent="tbl_gebruiker" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="220" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gebruiker_r2c1" parent="tbl_gebruiker_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=11;align=center;" value="" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gebruiker_r2c2" parent="tbl_gebruiker_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#E2E8F0;fontSize=12;align=left;spacingLeft=6;" value="Naam  -  VARCHAR(255) NOT NULL" vertex="1">
+          <mxGeometry height="30" width="180" x="40" as="geometry">
+            <mxRectangle height="30" width="180" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="GemaakteTest" vertex="1">
+          <mxGeometry height="120" width="260" x="40" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r1" parent="tbl_gemaaktetest" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r1c1" parent="tbl_gemaaktetest_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=11;align=center;" value="PK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r1c2" parent="tbl_gemaaktetest_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#FBBF24;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="ID  -  INT IDENTITY(1,1)" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r2" parent="tbl_gemaaktetest" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r2c1" parent="tbl_gemaaktetest_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=11;align=center;" value="FK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r2c2" parent="tbl_gemaaktetest_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="gebruikerID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r3" parent="tbl_gemaaktetest" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r3c1" parent="tbl_gemaaktetest_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=11;align=center;" value="FK" vertex="1">
+          <mxGeometry height="30" width="40" as="geometry">
+            <mxRectangle height="30" width="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktetest_r3c2" parent="tbl_gemaaktetest_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="testID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="220" x="40" as="geometry">
+            <mxRectangle height="30" width="220" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;fontSize=13;fillColor=#2A2A3E;strokeColor=#7C6AF7;fontColor=#FFFFFF;swimlaneFillColor=#1E1E2E;" value="GemaakteVraag" vertex="1">
+          <mxGeometry height="120" width="300" x="400" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r1" parent="tbl_gemaaktevraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r1c1" parent="tbl_gemaaktevraag_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=11;align=center;" value="PK / FK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r1c2" parent="tbl_gemaaktevraag_r1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="gemaakteTestID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="240" x="60" as="geometry">
+            <mxRectangle height="30" width="240" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r2" parent="tbl_gemaaktevraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r2c1" parent="tbl_gemaaktevraag_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=11;align=center;" value="PK / FK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r2c2" parent="tbl_gemaaktevraag_r2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#F97316;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="vraagID  -  INT NOT NULL" vertex="1">
+          <mxGeometry height="30" width="240" x="60" as="geometry">
+            <mxRectangle height="30" width="240" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r3" parent="tbl_gemaaktevraag" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r3c1" parent="tbl_gemaaktevraag_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=11;align=center;" value="FK" vertex="1">
+          <mxGeometry height="30" width="60" as="geometry">
+            <mxRectangle height="30" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tbl_gemaaktevraag_r3c2" parent="tbl_gemaaktevraag_r3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=0;overflow=hidden;fontColor=#A78BFA;fontStyle=1;fontSize=12;align=left;spacingLeft=6;" value="Tekst  -  VARCHAR(255)" vertex="1">
+          <mxGeometry height="30" width="240" x="60" as="geometry">
+            <mxRectangle height="30" width="240" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_onderwerp_vraag" edge="1" parent="1" source="tbl_onderwerp" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_vraag" value="1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vraag_antwoord" edge="1" parent="1" source="tbl_vraag" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_antwoord" value="2..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_onderwerp_test" edge="1" parent="1" source="tbl_onderwerp" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_test" value="0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_test_testvragen" edge="1" parent="1" source="tbl_test" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_testvragen" value="1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vraag_testvragen" edge="1" parent="1" source="tbl_vraag" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.85;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_testvragen" value="0..*">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_gebruiker_gemaaktetest" edge="1" parent="1" source="tbl_gebruiker" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_gemaaktetest" value="0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_test_gemaaktetest" edge="1" parent="1" source="tbl_test" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.85;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_gemaaktetest" value="0..*">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_gemaaktetest_gemaaktevraag" edge="1" parent="1" source="tbl_gemaaktetest" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_gemaaktevraag" value="1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vraag_gemaaktevraag" edge="1" parent="1" source="tbl_vraag" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#60A5FA;fontColor=#60A5FA;fontSize=11;labelBackgroundColor=#1E1E2E;" target="tbl_gemaaktevraag" value="0..*&#xa;(vraagID)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="709" />
+            </Array>
+            <mxPoint x="330" y="260" as="sourcePoint" />
+            <mxPoint x="480" y="569" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_antwoord_gemaaktevraag" edge="1" parent="1" source="tbl_antwoord" style="edgeStyle=entityRelationEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.85;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#FB923C;fontColor=#FB923C;fontSize=11;labelBackgroundColor=#1E1E2E;dashed=1;" target="tbl_gemaaktevraag" value="0..*&#xa;(vraagID, Tekst)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="500" />
+              <mxPoint x="920" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
