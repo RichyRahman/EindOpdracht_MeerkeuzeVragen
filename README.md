@@ -1,7 +1,7 @@
 # MeerkeuzevragenApp — README
 
 ## Beschrijving
-Een WPF-applicatie voor het opstellen, importeren, beheren en uitvoeren van meerkeuzevragen, gebouwd met een 3-lagenarchitectuur in C# en MySQL. Businesslogica zit in de domeinklassen zelf en wordt gecoördineerd via managerklassen — alle databanktoegang verloopt via pure ADO.NET zonder externe frameworks.
+Een WPF-applicatie voor het opstellen, importeren, beheren en uitvoeren van meerkeuzevragen, gebouwd met een 3-lagenarchitectuur in C# en Microsoft SQL Server. Businesslogica zit in de domeinklassen zelf en wordt gecoördineerd via managerklassen — alle databanktoegang verloopt via pure ADO.NET zonder externe frameworks.
 
 ---
 
@@ -11,77 +11,74 @@ Een WPF-applicatie voor het opstellen, importeren, beheren en uitvoeren van meer
 |---|---|
 | Visual Studio | 2022 of nieuwer |
 | .NET | 9.0 |
-| MySQL Server | 8.0 of nieuwer |
-| MySQL Workbench | Optioneel |
+| SQL Server | 2019 of nieuwer (bv. SQL Server Express) |
+| SQL Server Management Studio (SSMS) | Optioneel, voor databankbeheer |
 
 ---
 
 ## Installatie
 
 ### 1. Database aanmaken
-Open MySQL Workbench en voer het meegeleverde script `database_script.sql` uit:
+Open SQL Server Management Studio en voer het meegeleverde script `database_script.sql` uit:
 ```sql
 CREATE DATABASE meerkeuzeDB;
+GO
 USE meerkeuzeDB;
+GO
 
 CREATE TABLE Onderwerp (
-	ID INT AUTO_INCREMENT,
-    Naam VARCHAR(255) NOT NULL,
-    PRIMARY KEY(ID)
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Naam VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Vraag (
-	ID INT AUTO_INCREMENT,
+    ID INT IDENTITY(1,1) PRIMARY KEY,
     onderwerpID INT NOT NULL,
-    Moeilijkheidsgraad  VARCHAR(255) NOT NULL,
+    Moeilijkheidsgraad VARCHAR(255) NOT NULL,
     Tekst VARCHAR(255) NOT NULL,
-    isBeschikbaar BOOL DEFAULT TRUE,
-    PRIMARY KEY(ID),
+    isBeschikbaar BIT DEFAULT 1,
     FOREIGN KEY(onderwerpID) REFERENCES Onderwerp(ID)
 );
 
-CREATE TABLE Antwoord(
-	vraagID INT NOT NULL,
+CREATE TABLE Antwoord (
+    vraagID INT NOT NULL,
     Tekst VARCHAR(255) NOT NULL,
-    isCorrect BOOL DEFAULT FALSE,
+    isCorrect BIT DEFAULT 0,
     Feedback VARCHAR(255),
     PRIMARY KEY(vraagID, Tekst),
     FOREIGN KEY(vraagID) REFERENCES Vraag(ID)
 );
 
-CREATE TABLE Test(
-	ID INT AUTO_INCREMENT,
+CREATE TABLE Test (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
     Naam VARCHAR(255) NOT NULL,
     onderwerpID INT NOT NULL,
-    PRIMARY KEY(ID),
     FOREIGN KEY(onderwerpID) REFERENCES Onderwerp(ID)
 );
 
-CREATE TABLE TestVragen(
-	testID INT NOT NULL,
+CREATE TABLE TestVragen (
+    testID INT NOT NULL,
     vraagID INT NOT NULL,
     PRIMARY KEY(testID, vraagID),
     FOREIGN KEY(testID) REFERENCES Test(ID),
     FOREIGN KEY(vraagID) REFERENCES Vraag(ID)
 );
 
-CREATE TABLE Gebruiker(
-	ID INT AUTO_INCREMENT,
-    Naam VARCHAR(255) NOT NULL,
-    PRIMARY KEY(ID)
+CREATE TABLE Gebruiker (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Naam VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE GemaakteTest(
-	ID INT AUTO_INCREMENT,
+CREATE TABLE GemaakteTest (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
     gebruikerID INT NOT NULL,
     testID INT NOT NULL,
-    PRIMARY KEY(ID),
     FOREIGN KEY(gebruikerID) REFERENCES Gebruiker(ID),
     FOREIGN KEY(testID) REFERENCES Test(ID)
 );
 
-CREATE TABLE GemaakteVraag(
-	gemaakteTestID INT NOT NULL,
+CREATE TABLE GemaakteVraag (
+    gemaakteTestID INT NOT NULL,
     vraagID INT NOT NULL,
     Tekst VARCHAR(255),
     PRIMARY KEY(gemaakteTestID, vraagID),
@@ -98,12 +95,16 @@ De connectiestring wordt **niet** in de UI-laag bewaard, maar uitsluitend geleze
 <configuration>
   <connectionStrings>
     <add name="MeerkeuzeDB"
-         connectionString="Server=localhost;Port=3306;Database=meerkeuzeDB;User ID=root;Password=jouwwachtwoord;"
-         providerName="MySql.Data.MySqlClient"/>
+         connectionString="Server=JOUW_SERVERNAAM;Database=meerkeuzeDB;Trusted_Connection=True;TrustServerCertificate=True;"
+         providerName="Microsoft.Data.SqlClient"/>
   </connectionStrings>
 </configuration>
 ```
+Vervang `JOUW_SERVERNAAM` door de servernaam zoals weergegeven in SSMS (bv. `localhost\SQLEXPRESS` of `DESKTOP-XXXXX\SQLEXPRESS`). `Trusted_Connection=True` gebruikt Windows-authenticatie — geen username/password nodig.
+
 De klasse `DatabaseConnection` (in `MeerkeuzevragenApp.DATA`) leest deze string in via `ConfigurationManager` — de UI-laag kent enkel de `DatabaseConnection`-klasse, niet de connectiestring zelf.
+
+> **Server Explorer in Visual Studio:** een eventuele databankconnectie via de Server Explorer is volledig **optioneel** en heeft geen invloed op de werking van de applicatie. De C#-code verbindt uitsluitend via de connectiestring in `App.config`.
 
 ### 3. NuGet packages herstellen
 Open de solution in Visual Studio en klik:
@@ -112,12 +113,12 @@ Build → Restore NuGet Packages
 ```
 
 Gebruikte packages:
-- `MySql.Data` — MySQL connectie (ADO.NET)
+- `Microsoft.Data.SqlClient` — SQL Server connectie (ADO.NET)
 - `System.Configuration.ConfigurationManager` — inlezen `App.config`
 - `xunit` — Unit testing framework
 - `xunit.runner.visualstudio` — Test Explorer integratie
 
-> Er worden **geen** ORM- of mocking-frameworks gebruikt (geen Dapper, geen Entity Framework, geen Moq). Alle databanktoegang gebeurt via pure ADO.NET (`MySqlConnection`, `MySqlCommand`, `MySqlDataReader`).
+> Er worden **geen** ORM- of mocking-frameworks gebruikt (geen Dapper, geen Entity Framework, geen Moq). Alle databanktoegang gebeurt via pure ADO.NET (`SqlConnection`, `SqlCommand`, `SqlDataReader`).
 
 ### 4. Applicatie starten
 Stel `MeerkeuzeVragenApp.UI` in als startup project en druk op `F5`.
@@ -133,7 +134,7 @@ Stel `MeerkeuzeVragenApp.UI` in als startup project en druk op `F5`.
 4. Kies een moeilijkheidsgraad
 5. Klik op **Importeer**
 
-Ondersteunde bestandsformaten worden automatisch herkend via het `ITestParser`-mechanisme (zie [Schaalbaarheid: ITestParser](#schaalbaarheid-itestparser)):
+Ondersteunde bestandsformaten worden automatisch herkend via het `ITestParser`-mechanisme:
 - **Standaard formaat** — antwoorden onderaan na een regel `Antwoorden`
 - **Correct-formaat** — `Correct: X` direct na elke vraag, 5 antwoordopties (A–E)
 
@@ -196,7 +197,7 @@ Het hart van de applicatie. Bevat geen verwijzingen naar andere projecten.
 Validatie gebeurt in de **setters** van de domeinklassen zelf (bv. `Vraag.Tekst` gooit een `DomeinException` bij een lege waarde), en businessregels zoals scoreberekening en feedback zitten als methoden **op** de domeinobjecten — niet in een afzonderlijke servicelaag.
 
 ### MeerkeuzevragenApp.DATA
-Implementeert de interfaces uit het DOMEIN met pure ADO.NET.
+Implementeert de interfaces uit het DOMEIN met pure ADO.NET voor SQL Server.
 
 - `DatabaseConnection` — leest de connectiestring uit `App.config` via `ConfigurationManager`
 - **Repositories/**
@@ -206,7 +207,7 @@ Implementeert de interfaces uit het DOMEIN met pure ADO.NET.
   - `StandaardFormaatParser : ITestParser`
   - `CorrectFormaatParser : ITestParser`
 
-Alle databankoperaties gebruiken `MySqlConnection`, `MySqlCommand` en `MySqlDataReader` met geparametriseerde queries. Het toevoegen van een vraag met antwoorden gebeurt binnen een transactie (`BeginTransaction` / `Commit` / `Rollback`).
+Alle databankoperaties gebruiken `SqlConnection`, `SqlCommand` en `SqlDataReader` met geparametriseerde queries. Het toevoegen van een vraag met antwoorden gebeurt binnen een transactie (`BeginTransaction` / `Commit` / `Rollback`). Auto-gegenereerde ID's worden opgehaald via `SELECT CAST(SCOPE_IDENTITY() AS INT)` in combinatie met `ExecuteScalar()`.
 
 ### MeerkeuzeVragenApp.UI
 WPF-schermen die uitsluitend communiceren met `VraagManager` en `TestManager` uit het DOMEIN. De UI heeft geen kennis van de DATA-laag, ADO.NET of de connectiestring — deze instanties worden eenmalig samengesteld in `App.xaml.cs`:
@@ -251,6 +252,21 @@ public interface ITestParser
 2. Deze klasse toevoegen aan de parserlijst in `App.xaml.cs`
 
 Bestaande parsers, managers en repositories blijven ongewijzigd.
+
+---
+
+## Wisselen van databankprovider
+
+Dankzij het Repository-pattern (`IVraagRepository`, `ITestRepository` gedefinieerd in het DOMEIN) is een wissel van databankprovider beperkt tot het **DATA-project**:
+
+```
+□ App.config       → connectiestring + provider aanpassen
+□ NuGet            → juiste ADO.NET-provider package
+□ DatabaseConnection.cs → Connection-type aanpassen
+□ Repositories/    → Command/Reader-types + auto-increment ID ophalen
+```
+
+De DOMEIN-laag, de Managers, de UI en alle 33 unit tests blijven **volledig ongewijzigd** — exact het ontkoppelingsprincipe dat de gelaagde architectuur beoogt.
 
 ---
 
